@@ -3,11 +3,12 @@ package application;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-class PieceView extends ImageView {
-    ChessPiece piece;
+class ChessPiece extends ImageView {
+    PieceType type;
     SetColor color;
+    int value;
 
-    PieceView(Image image) {
+    ChessPiece(Image image) {
         super(image);
     }
 }

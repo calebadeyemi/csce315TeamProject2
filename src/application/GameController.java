@@ -16,19 +16,19 @@ enum SetColor {
     White, Black
 }
 
-enum ChessPiece {
+enum PieceType {
     King, Queen, Rook, Bishop, Knight, Pawn
 }
 
-public class GameController {
+class GameController {
     HashMap<String, Image> pieceMap = new HashMap<>();
-    /**
-     * The standard chess board size is 8x8
-     */
-    private final int size = 8 ;
 
     GameController() {
-        try {
+        generateImageMap();
+    }
+
+    private void generateImageMap() {
+         try {
             String[] colors = {"black", "white"};
             String[] pieces = {"king", "queen", "bishop", "rook", "knight", "pawn"};
 
@@ -43,7 +43,6 @@ public class GameController {
         } catch (FileNotFoundException e) {
             System.out.println("Piece image file not found.");
         }
-
     }
 
     Pane getGameBoard() {
@@ -54,8 +53,10 @@ public class GameController {
         root.setMaxWidth(600);
 
         /*
-         * Set alternating colors for the board
+         * Set alternating colors for the board.
+         * The standard chess board size is 8x8.
          */
+        int size = 8;
         for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col ++) {
                 StackPane square = new StackPane();
@@ -72,59 +73,62 @@ public class GameController {
         return root;
     }
 
-    /**
-     *
-     * @param color
-     * @param piece
-     * @return
-     */
-    PieceView getPiece(String color, String piece) {
-        SetColor setColor = color.equals("white") ? SetColor.White : SetColor.Black;
-        ChessPiece chessPiece = null;
-
-        switch (piece) {
-            case "king": chessPiece = ChessPiece.King; break;
-            case "queen": chessPiece = ChessPiece.Queen; break;
-            case "rook": chessPiece = ChessPiece.Rook; break;
-            case "bishop": chessPiece = ChessPiece.Bishop; break;
-            case "knight": chessPiece = ChessPiece.Knight; break;
-            case "pawn": chessPiece = ChessPiece.Pawn; break;
+    private ChessPiece generatePiece(String color, String type) {
+        ChessPiece chessPiece =  new ChessPiece(pieceMap.get(color + "_" + type));
+        chessPiece.color = color.equals("white") ? SetColor.White : SetColor.Black;
+        switch (type) {
+            case "king"  :
+                chessPiece.type = PieceType.King;
+                chessPiece.value = 900;
+                break;
+            case "queen" :
+                chessPiece.type = PieceType.Queen;
+                chessPiece.value = 90;
+                break;
+            case "rook"  :
+                chessPiece.type = PieceType.Rook;
+                chessPiece.value = 50;
+                break;
+            case "bishop":
+                chessPiece.type = PieceType.Bishop;
+                chessPiece.value = 30;
+                break;
+            case "knight":
+                chessPiece.type = PieceType.Knight;
+                chessPiece.value = 30;
+                break;
+            case "pawn"  :
+                chessPiece.type = PieceType.Pawn;
+                chessPiece.value = 10;
+                break;
         }
 
-        PieceView view =  new PieceView(pieceMap.get(color + "_" + piece));
-        view.color = setColor;
-        view.piece = chessPiece;
-        view.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                System.out.println(view.color);
-                System.out.println(view.piece);
-            }
-        });
-        return view;
-    }
+        chessPiece.addEventHandler(MouseEvent.MOUSE_CLICKED, new ChessAction(chessPiece));
 
-    void addSet(GridPane root, String color, int kingRow, int pawnRow) {
-        root.add(getPiece(color, "rook"),   0, kingRow);
-        root.add(getPiece(color, "knight"), 1, kingRow );
-        root.add(getPiece(color, "bishop"), 2, kingRow );
-        root.add(getPiece(color, "king"),   3, kingRow );
-        root.add(getPiece(color, "queen"),  4, kingRow );
-        root.add(getPiece(color, "bishop"), 5, kingRow );
-        root.add(getPiece(color, "knight"), 6, kingRow );
-        root.add(getPiece(color, "rook"),   7, kingRow );
-        root.add(getPiece(color, "pawn"),   0, pawnRow);
-        root.add(getPiece(color, "pawn"),   1, pawnRow );
-        root.add(getPiece(color, "pawn"),   2, pawnRow );
-        root.add(getPiece(color, "pawn"),   3, pawnRow );
-        root.add(getPiece(color, "pawn"),   4, pawnRow );
-        root.add(getPiece(color, "pawn"),   5, pawnRow );
-        root.add(getPiece(color, "pawn"),   6, pawnRow );
-        root.add(getPiece(color, "pawn"),   7, pawnRow );
+        return chessPiece;
     }
 
     void addPieces(GridPane root) {
         addSet(root, "white", 0, 1);
         addSet(root, "black", 7, 6);
+    }
+
+    private void addSet(GridPane root, String color, int kingRow, int pawnRow) {
+        root.add(generatePiece(color, "rook"),   0, kingRow);
+        root.add(generatePiece(color, "knight"), 1, kingRow );
+        root.add(generatePiece(color, "bishop"), 2, kingRow );
+        root.add(generatePiece(color, "king"),   3, kingRow );
+        root.add(generatePiece(color, "queen"),  4, kingRow );
+        root.add(generatePiece(color, "bishop"), 5, kingRow );
+        root.add(generatePiece(color, "knight"), 6, kingRow );
+        root.add(generatePiece(color, "rook"),   7, kingRow );
+        root.add(generatePiece(color, "pawn"),   0, pawnRow);
+        root.add(generatePiece(color, "pawn"),   1, pawnRow );
+        root.add(generatePiece(color, "pawn"),   2, pawnRow );
+        root.add(generatePiece(color, "pawn"),   3, pawnRow );
+        root.add(generatePiece(color, "pawn"),   4, pawnRow );
+        root.add(generatePiece(color, "pawn"),   5, pawnRow );
+        root.add(generatePiece(color, "pawn"),   6, pawnRow );
+        root.add(generatePiece(color, "pawn"),   7, pawnRow );
     }
 }
