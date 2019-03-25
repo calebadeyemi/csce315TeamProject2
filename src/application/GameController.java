@@ -20,7 +20,7 @@ enum ChessPiece {
     King, Queen, Rook, Bishop, Knight, Pawn
 }
 
-class GameController {
+public class GameController {
     HashMap<String, Image> pieceMap = new HashMap<>();
     /**
      * The standard chess board size is 8x8
