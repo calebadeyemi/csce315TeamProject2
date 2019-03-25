@@ -6,10 +6,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 
 import java.util.HashMap;
 
@@ -72,14 +69,6 @@ class RootSceneController {
         return  gamePane;
     }
 
-    Pane generateGamePane() {
-        AnchorPane gamePane = new AnchorPane();
-        Label lbl = new Label();
-        lbl.setText("Game");
-        gamePane.getChildren().add(lbl);
-        return gamePane;
-    }
-
     void presentGame() {
         GameController gameController = new GameController();
         startButton.setText("Stop");
@@ -90,8 +79,9 @@ class RootSceneController {
             }
         });
         scoreBoard.setText("0:0");
-        views.put("Game", gameController.getGameScene());
-        gameController.addPieces();
+        GridPane board = (GridPane)gameController.getGameBoard();
+        views.put("Game", board);
+        gameController.addPieces(board);
         vBox.getChildren().remove(views.get("Welcome"));
         vBox.getChildren().add(views.get("Game"));
     }
