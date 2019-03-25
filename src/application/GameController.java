@@ -268,28 +268,59 @@ class GameController {
     private List<Position> getLegalMoves(int[][] gameState, int col, int row) {
         switch (Math.abs(gameState[row][col])) {
             case Pawn: return pawnMoves(gameState, col, row);
+            case Knight: return knightMoves(gameState, col, row);
+            case Bishop: return bishopMoves(gameState, col, row);
+            case Rook: return rookMoves(gameState, col, row);
+            case Queen: return queenMoves(gameState, col, row);
+            case King: return kingMoves(gameState, col, row);
         }
         return null;
+    }
+
+    private ArrayList<Position> knightMoves(int[][] gameState, int col, int row) {
+        return new ArrayList<>();
+    }
+
+    private ArrayList<Position> bishopMoves(int[][] gameState, int col, int row) {
+        return new ArrayList<>();
+    }
+
+    private ArrayList<Position> rookMoves(int[][] gameState, int col, int row) {
+        return new ArrayList<>();
+    }
+
+    private ArrayList<Position> queenMoves(int[][] gameState, int col, int row) {
+        return new ArrayList<>();
+    }
+
+    private ArrayList<Position> kingMoves(int[][] gameState, int col, int row) {
+        return new ArrayList<>();
     }
 
     private ArrayList<Position> pawnMoves(int[][] gameState, int col, int row) {
         ArrayList<Position> moves = new ArrayList<>();
 
+        // get the value of the present piece to determine set
         int pieceVal = gameState[row][col];
 
+        // if is white move down from top, else move up from bottom
         int dir = 1;
         int startRow = 1;
-        // if is white move down, else move up
         if (pieceVal < 0) {
+            // is black
             dir *= -1;
             startRow = 6;
         }
 
+        // a pawn can jump 2 spaces from startrow, but only moves 1 space
+        // afterwards.
         int maxDist = 1;
         if (row == startRow) {
             maxDist = 2;
         }
 
+        // check in the forward direction for spaces. Pawns cannot move over
+        // pieces.
         for (int dist = 1; dist <= maxDist; dist++) {
             int mvmtRow = row + dist * dir;
             if (inBounds(col, mvmtRow)) {
@@ -302,7 +333,7 @@ class GameController {
             }
         }
 
-        // check attack vectors
+        // check attack vectors, which for pawns are diagonal one space forward
         int[] sides = {-1, 1};
         for (int side : sides) {
             int tgtRow = row + dir;
@@ -321,10 +352,7 @@ class GameController {
     }
 
     private boolean inBounds(int row, int col) {
-        if (row > -1 && row < boardSize && col > -1 && col < boardSize) {
-            return true;
-        }
-        return false;
+        return row > -1 && row < boardSize && col > -1 && col < boardSize;
     }
 
     private ImageView generatePiece(String color, String type) {
