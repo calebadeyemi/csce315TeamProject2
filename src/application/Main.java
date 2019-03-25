@@ -1,14 +1,17 @@
 package application;
 
 import javafx.application.Application;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class Main extends Application {
     public void start(Stage primaryStage) {
         try {
-            RootSceneController rootSceneController = new RootSceneController();
             primaryStage.setTitle("Team Project 2");
-            primaryStage.setScene(rootSceneController.generateRootScene());
+
+            RootSceneController rootSceneController = new RootSceneController();
+            primaryStage.setScene(rootSceneController.generateRootScene(new VBox()));
+
             primaryStage.show();
         } catch (Exception e) {
             e.printStackTrace();
