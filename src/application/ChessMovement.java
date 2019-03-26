@@ -17,6 +17,13 @@ class ChessMovement {
         }
     }
 
+    static int[][] applyMove(int[][]state, int fromRow, int fromCol, int toRow,int toCol) {
+        int value = state[fromRow][fromCol];
+        state[fromRow][fromCol] = 0;
+        state[toRow][toCol] = value;
+        return state;
+    }
+
     static int[][] getPotentialMovements(int[][] state, int col, int row) {
         List<Position> potentialMoves;
 

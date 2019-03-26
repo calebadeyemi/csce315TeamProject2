@@ -11,10 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 
-/**
- * The root scene is the main frame of the GUI. It handles the overall layout of the program. This is where more
- * "global" changes should take place and should be the highest point of abstraction to transfer logic.
- */
+
 class ChessGameController {
     private int[][] state = new int[8][8];
     private int[][] movementState = new int[8][8];
@@ -58,28 +55,31 @@ class ChessGameController {
         return ChessBoard.addPiecesToBoard(board, state, handleSelectPiece);
     }
 
-    private void getPieceMoves(Node piece) {
-        selectedPiece = piece;
-        int col = GridPane.getColumnIndex(piece);
-        int row = GridPane.getRowIndex(piece);
-        movementState = new int[8][8];
-        movementState = ChessMovement.getPotentialMovements(state, col, row);
-    }
-
     private GridPane drawMovementAnnotations(GridPane board, int[][] moves) {
         return ChessBoard.annotateBoard(board, moves, "green", handleSelectMove);
     }
 
+    private void getPieceMoves(Node piece) {
+        selectedPiece = piece;
+        int col = GridPane.getColumnIndex(piece);
+        int row = GridPane.getRowIndex(piece);
+        if (state[row][col] < 0) {
+            movementState = new int[8][8];
+            movementState = ChessMovement.getPotentialMovements(state, col, row);
+        } else {
+            selectedPiece = null;
+        }
+    }
+
     private void movePiece(Node space) {
+        movementState = new int[8][8];
         int toCol = GridPane.getColumnIndex(space);
         int toRow = GridPane.getRowIndex(space);
         int fromCol = GridPane.getColumnIndex(selectedPiece);
         int fromRow = GridPane.getRowIndex(selectedPiece);
 
-        int value = state[fromRow][fromCol];
-        state[fromRow][fromCol] = 0;
-        state[toRow][toCol] = value;
-        movementState = new int[8][8];
+        state = ChessMovement.applyMove(state, fromRow, fromCol, toRow, toCol);
+        state = ChessAi.MovePiece(state);
     }
 
     private void updateScene() {
