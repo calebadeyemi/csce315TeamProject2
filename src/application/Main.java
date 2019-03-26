@@ -9,8 +9,8 @@ public class Main extends Application {
         try {
             primaryStage.setTitle("Team Project 2");
 
-            RootSceneController rootSceneController = new RootSceneController();
-            primaryStage.setScene(rootSceneController.generateRootScene(new VBox()));
+            ChessGameController chessGameController = new ChessGameController();
+            primaryStage.setScene(chessGameController.generateRootScene(new VBox()));
 
             primaryStage.show();
         } catch (Exception e) {
