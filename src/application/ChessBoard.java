@@ -71,7 +71,7 @@ class ChessBoard {
     }
 
     // Assigns a piece to a position based on the positions value in the game state
-    private static GridPane addPieceToPosition(int value, GridPane board, int row, int col, EventHandler e) {
+    private static GridPane addPieceToPosition(int value, GridPane board, int row, int col, EventHandler onSelectPiece) {
         String color = value > 0 ? "white" : "black";
         ImageView image = new ImageView();
         switch(Math.abs(value)) {
@@ -94,13 +94,13 @@ class ChessBoard {
                 image = generatePiece(color, "king");
                 break;
         }
-        image.addEventHandler(MouseEvent.MOUSE_CLICKED, e);
+        image.addEventHandler(MouseEvent.MOUSE_CLICKED, onSelectPiece);
         board.add(image, col, row);
         return board;
     }
 
     // Generates a checkered board
-    static GridPane drawGameBoard(GridPane board) {
+    static GridPane drawGameBoard(GridPane board, EventHandler<Event> onSelectSquare) {
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 StackPane square = new StackPane();
@@ -110,6 +110,7 @@ class ChessBoard {
                 String color = (row + col) % 2 == 0 ? "white" : "gray";
                 square.setStyle("-fx-background-color: " + color + ";");
                 square.setAlignment(Pos.CENTER);
+                square.addEventHandler(MouseEvent.MOUSE_CLICKED, onSelectSquare);
                 board.add(square, col, row);
             }
         }

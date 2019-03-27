@@ -50,7 +50,7 @@ class ChessGameController {
     }
 
     private GridPane drawBoard(int[][] state) {
-        GridPane board = ChessBoard.drawGameBoard(new GridPane());
+        GridPane board = ChessBoard.drawGameBoard(new GridPane(), handleSelectPiece);
         board.addEventHandler(MouseEvent.MOUSE_CLICKED, handleUiUpdate);
         return ChessBoard.addPiecesToBoard(board, state, handleSelectPiece);
     }
