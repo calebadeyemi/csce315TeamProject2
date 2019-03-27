@@ -62,7 +62,42 @@ class ChessMovement {
     }
 
     private static ArrayList<Position> knightMoves(int[][] gameState, int col, int row) {
-        return new ArrayList<>();
+        ArrayList<Position> moves = new ArrayList<>();
+
+
+        //get the value of the present piece to determine set
+        int pieceColor = gameState[row][col];
+
+        //movement of knight
+        int[] rowOffset = {-2, 2};
+        int[] colOffset = {-1, 1};
+        for(int side : rowOffset) {
+            int tgtCol = 0;
+            int tgtRow = 0;
+
+            for (int side2 : colOffset) {
+                tgtRow = side + row;
+                tgtCol = side2 + col;
+
+                if (inBounds(tgtRow, tgtCol, 8)) {
+                    //check to see when can attack ( same color)
+
+                    Position p = new Position(tgtCol, tgtRow);
+                    moves.add(p);
+                }
+
+                tgtRow = row + side2;
+                tgtCol = col + side;
+                if (inBounds(tgtRow, tgtCol, 8)) {
+                    //check to see when can attack ( same color)
+                    Position p2 = new Position(tgtCol, tgtRow);
+                    moves.add(p2);
+                }
+            }
+        }
+
+
+        return moves;
     }
 
     private static ArrayList<Position> bishopMoves(int[][] gameState, int col, int row) {
