@@ -85,12 +85,12 @@ class ChessMovement {
         ArrayList<Position> moves = new ArrayList<>();
 
         // get the value of the present piece to determine set
-        int pieceVal = gameState[row][col];
+        int pieceColor = gameState[row][col];
 
         // if is white move down from top, else move up from bottom
         int dir = 1;
         int startRow = 1;
-        if (pieceVal < 0) {
+        if (pieceColor < 0) {
             // is black
             dir *= -1;
             startRow = 6;
@@ -125,7 +125,7 @@ class ChessMovement {
             if (inBounds(tgtRow, tgtCol, 8)) {
                 // check if the target value is the same color, else it is attackable
                 int tgtVal = gameState[tgtRow][tgtCol];
-                if (tgtVal * pieceVal < 0) {
+                if (tgtVal * pieceColor < 0) {
                     Position p = new Position(tgtCol, tgtRow);
                     moves.add(p);
                 }
