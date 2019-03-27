@@ -101,7 +101,108 @@ class ChessMovement {
     }
 
     private static ArrayList<Position> bishopMoves(int[][] gameState, int col, int row) {
-        return new ArrayList<>();
+        ArrayList<Position> moves = new ArrayList<>();
+
+        //get the value of the present piece to determine set
+        int pieceColor = gameState[row][col];
+
+        int i = 0;
+        int num = 0;
+
+        //bishop can move diagonally to the left
+        int[] rowOffset = {-1};
+        int[] colOffset = {-1};
+        while(num < 8) {
+            for (int side : rowOffset) {
+                for (int side2 : colOffset) {
+                    int tgtRow = side + row + i;
+                    int tgtCol = side2 + col + i;
+
+                    if (inBounds(tgtRow, tgtCol, 8)) {
+                        //check to see when can attack ( same color)
+
+                        Position p = new Position(tgtCol, tgtRow);
+                        moves.add(p);
+                    }
+                }
+            }
+            i = i -1;
+            num++;
+        }
+
+        //bishop can move diagonally to the right
+        num = 0;
+        int j =0;
+        int[] rowOffset2 = {-1};
+        int[] colOffset2 = {1};
+
+        while(num < 8) {
+            for (int side3 : rowOffset2) {
+                for (int side4 : colOffset2) {
+                    int tgtRow2 = side3 + row + j;
+                    int tgtCol2 = side4 + col - j;
+
+                    if (inBounds(tgtRow2, tgtCol2, 8)) {
+                        //check to see when can attack ( same color)
+
+                        Position p = new Position(tgtCol2, tgtRow2);
+                        moves.add(p);
+                    }
+                }
+            }
+            j = j -1;
+            num++;
+        }
+
+        //bishop can move down diagonally to the left
+        num = 0;
+        int k =0;
+        int[] rowOffset3 = {1};
+        int[] colOffset3 = {1};
+        while(num < 8) {
+            for (int side5 : rowOffset3) {
+                for (int side6 : colOffset3) {
+                    int tgtRow3 = side5 + row + k;
+                    int tgtCol3 = side6 + col + k;
+
+                    if (inBounds(tgtRow3, tgtCol3, 8)) {
+                        //check to see when can attack ( same color)
+
+                        Position p = new Position(tgtCol3, tgtRow3);
+                        moves.add(p);
+                    }
+                }
+            }
+            k = k + 1;
+            num++;
+        }
+
+        //bishop can move down diagonally to the right
+        num = 0;
+        int l =0;
+        int[] rowOffset4 = {-1};
+        int[] colOffset4 = {1};
+
+        while(num < 8) {
+            for (int side7 : rowOffset4) {
+                for (int side8 : colOffset4) {
+                    int tgtRow4 = side7 + row - l;
+                    int tgtCol4 = side8 + col + l;
+
+                    if (inBounds(tgtRow4, tgtCol4, 8)) {
+                        //check to see when can attack ( same color)
+
+                        Position p = new Position(tgtCol4, tgtRow4);
+                        moves.add(p);
+                    }
+                }
+            }
+            l = l -1;
+            num++;
+        }
+
+
+        return moves;
     }
 
     private static ArrayList<Position> rookMoves(int[][] gameState, int col, int row) {
