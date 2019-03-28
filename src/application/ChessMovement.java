@@ -482,7 +482,75 @@ class ChessMovement {
     }
 
     private static ArrayList<Position> kingMoves(int[][] gameState, int col, int row) {
-        return new ArrayList<>();
+        ArrayList<Position> moves = new ArrayList<>();
+
+        // get the value of the present piece to determine set
+        int pieceColor = gameState[row][col];
+
+        int[] rowOffset = {-1,1};
+        int[] colOffset = {-1,1};
+
+        //king can move diagonally
+        for (int side : rowOffset) {
+            for (int side2 : colOffset) {
+                int tgtRow = side + row;
+                int tgtCol = side2 + col;
+
+                if (inBounds(tgtRow, tgtCol, 8)) {
+                    //check to see when can attack ( same color)
+
+                    Position p = new Position(tgtCol, tgtRow);
+                    moves.add(p);
+                }
+            }
+        }
+
+        //king can move up
+        int maxDistance = 1;
+        for(int i = 1;  i <= maxDistance; i++){
+            int tgtRow2 = row - i;
+            if (inBounds(tgtRow2, col, 8)) {
+                //check to see when can attack ( same color)
+
+                Position p = new Position(col, tgtRow2);
+                moves.add(p);
+            }
+        }
+
+        //king can move down
+        for(int i = 1;  i <= maxDistance; i++){
+            int tgtRow3 = row + i;
+            if (inBounds(tgtRow3, col, 8)) {
+                //check to see when can attack ( same color)
+
+                Position p = new Position(col, tgtRow3);
+                moves.add(p);
+            }
+        }
+
+        //king can move right
+        for(int i = 1;  i <= maxDistance; i++){
+            int tgtCol2 = col + i;
+            if (inBounds(row, tgtCol2, 8)) {
+                //check to see when can attack ( same color)
+
+                Position p = new Position(tgtCol2, row);
+                moves.add(p);
+            }
+        }
+
+        //king can move left
+        for(int i = 1;  i <= maxDistance; i++){
+            int tgtCol3 = col - i;
+            if (inBounds(row, tgtCol3, 8)) {
+                //check to see when can attack ( same color)
+
+                Position p = new Position(tgtCol3, row);
+                moves.add(p);
+            }
+        }
+
+        return moves;
     }
 
     private static ArrayList<Position> pawnMoves(int[][] gameState, int col, int row) {
