@@ -206,7 +206,93 @@ class ChessMovement {
     }
 
     private static ArrayList<Position> rookMoves(int[][] gameState, int col, int row) {
-        return new ArrayList<>();
+        ArrayList<Position> moves = new ArrayList<>();
+
+        //get the value of the present piece to determine set
+        int pieceColor = gameState[row][col];
+
+        //movement of rook
+        int[] rowOffset = {1};
+        int[] colOffset = {1};
+
+        //rook can move up
+        int i = 0;
+        int num = 0;
+        while(num < 8){
+            for(int side : rowOffset) {
+                int tgtRow = row + i;
+
+                if (inBounds(tgtRow, col, 8)) {
+                    //check to see when can attack ( same color)
+
+                    Position p = new Position(col, tgtRow);
+                    moves.add(p);
+                }
+
+            }
+            i = i -1;
+            num++;
+        }
+
+        //rook can move left
+        num = 0;
+        int j = 0;
+        while(num < 8){
+            for(int side2 : colOffset) {
+                int tgtCol = col - j;
+
+                if (inBounds(row, tgtCol, 8)) {
+                    //check to see when can attack ( same color)
+
+                    Position p = new Position(tgtCol, row);
+                    moves.add(p);
+                }
+
+            }
+            j = j + 1;
+            num++;
+        }
+
+        //rook can move down
+        num = 0;
+        int m = 0;
+        while(num < 8){
+            for(int side3 : rowOffset) {
+                int tgtRow2 = row + m;
+
+                if (inBounds(tgtRow2, col, 8)) {
+                    //check to see when can attack ( same color)
+
+                    Position p = new Position(col, tgtRow2);
+                    moves.add(p);
+                }
+
+            }
+            m = m + 1;
+            num++;
+        }
+
+        //rook can move right
+        num = 0;
+        int n = 0;
+        while(num < 8){
+            for(int side4 : colOffset) {
+                int tgtCol2 = col + n;
+
+                if (inBounds(row, tgtCol2, 8)) {
+                    //check to see when can attack ( same color)
+
+                    Position p = new Position(tgtCol2, row);
+                    moves.add(p);
+                }
+
+            }
+            n = n + 1;
+            num++;
+        }
+
+
+        return moves;
     }
 
     private static ArrayList<Position> queenMoves(int[][] gameState, int col, int row) {
