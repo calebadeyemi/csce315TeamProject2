@@ -1,15 +1,22 @@
 package application;
 
 import com.sun.javafx.scene.control.skin.ButtonSkin;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+
+import javax.swing.event.ChangeEvent;
+import java.util.HashMap;
 
 
 class ChessGameController {
@@ -18,6 +25,7 @@ class ChessGameController {
     private Pane root;
     private GridPane board;
     private Node selectedPiece;
+    private ChessMoveMakeable opponent = new ChessAi();
 
     private EventHandler<Event> handleSelectPiece = event -> getPieceMoves((Node) event.getSource());
     private EventHandler<Event> handleSelectMove = event -> movePiece((Node) event.getSource());
@@ -29,6 +37,7 @@ class ChessGameController {
         HBox header = new HBox();
         header.setAlignment(Pos.CENTER);
         header.setSpacing(70);
+        header.setMinHeight(50);
 
         Button resetBtn = new Button();
         resetBtn.setText("Reset");
@@ -36,6 +45,26 @@ class ChessGameController {
         resetBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, handleReset);
 
         header.getChildren().add(resetBtn);
+
+        HBox choice = new HBox();
+        choice.setAlignment(Pos.CENTER);
+        Label choiceLbl = new Label();
+        choiceLbl.setText("Opponent: ");
+        ChoiceBox opponentSelection = new ChoiceBox();
+        opponentSelection.setItems(FXCollections.observableArrayList("computer", "local", "remote"));
+        opponentSelection.setValue("computer");
+        opponentSelection.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                switch (newValue.intValue()) {
+                    case 0 : opponent = new ChessAi(); break;
+                    case 1 : opponent = new LocalOpponent(); break;
+                    case 2 : opponent = new RemoteOpponent(); break;
+                }
+            }
+        });
+        choice.getChildren().addAll(choiceLbl, opponentSelection);
+        header.getChildren().add(choice);
 
         Label scoreBoard = new Label();
         scoreBoard.setText("0 : 0");
@@ -47,6 +76,10 @@ class ChessGameController {
         root.getChildren().add(board);
 
         return new Scene(root);
+    }
+
+    private void updateOpponent(ChessMoveMakeable opponent) {
+
     }
 
     private GridPane drawBoard(int[][] state) {
@@ -79,7 +112,7 @@ class ChessGameController {
         int fromRow = GridPane.getRowIndex(selectedPiece);
 
         state = ChessMovement.applyMove(state, fromRow, fromCol, toRow, toCol);
-        state = ChessAi.MovePiece(state);
+        state = opponent.getMove(state);
     }
 
     private void updateScene() {

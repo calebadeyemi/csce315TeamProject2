@@ -2,8 +2,14 @@ package application;
 
 import static application.PieceValue.Pawn;
 
-class ChessAi {
-    static int[][] MovePiece(int[][] state) {
+class ChessAi implements ChessMoveMakeable {
+
+    @Override
+    public int[][] getMove(int[][] state) {
+        return makeMove(state);
+    }
+
+    private static int[][] makeMove(int[][] state) {
         int[][] moves = new int[8][8];
         int row, col = 0;
         for (row = 0; row < 8; row++) {
@@ -27,7 +33,7 @@ class ChessAi {
         return state;
     }
 
-    static int sumMatrix(int[][] matrix) {
+    private static int sumMatrix(int[][] matrix) {
         int sum = 0;
         for (int[] row : matrix) {
             for (int col : row) {
@@ -36,4 +42,6 @@ class ChessAi {
         }
         return sum;
     }
+
+
 }
