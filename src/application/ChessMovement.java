@@ -617,6 +617,6 @@ class ChessMovement {
     }
 
     private static boolean isValid(int color, int[][]state, int row, int col) {
-        return inBounds(row, col, 8) && isSameColor(color, state, row, col);
+        return inBounds(row, col, 8) && !isSameColor(color, state, row, col);
     }
 }
