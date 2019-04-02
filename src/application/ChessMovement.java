@@ -79,19 +79,17 @@ class ChessMovement {
                 tgtRow = side + row;
                 tgtCol = side2 + col;
 
-                if (inBounds(tgtRow, tgtCol, 8)) {
-                    //check to see when can attack ( same color)
-
+                if (isValid(pieceColor, gameState, tgtRow, tgtCol)) {
                     Position p = new Position(tgtCol, tgtRow);
                     moves.add(p);
                 }
 
                 tgtRow = row + side2;
                 tgtCol = col + side;
-                if (inBounds(tgtRow, tgtCol, 8)) {
-                    //check to see when can attack ( same color)
-                    Position p2 = new Position(tgtCol, tgtRow);
-                    moves.add(p2);
+
+                if (isValid(pieceColor, gameState, tgtRow, tgtCol)) {
+                    Position p = new Position(tgtCol, tgtRow);
+                    moves.add(p);
                 }
             }
         }
@@ -120,9 +118,11 @@ class ChessMovement {
 
                     if (inBounds(tgtRow, tgtCol, 8)) {
                         //check to see when can attack ( same color)
-
-                        Position p = new Position(tgtCol, tgtRow);
-                        moves.add(p);
+                    int tgtVal = gameState[tgtRow][tgtCol];
+                        if (tgtVal * pieceColor <= 0) {
+                            Position p = new Position(tgtCol, tgtRow);
+                            moves.add(p);
+                        }
                     }
                 }
             }
@@ -144,9 +144,11 @@ class ChessMovement {
 
                     if (inBounds(tgtRow2, tgtCol2, 8)) {
                         //check to see when can attack ( same color)
-
-                        Position p = new Position(tgtCol2, tgtRow2);
-                        moves.add(p);
+                        int tgtVal = gameState[tgtRow2][tgtCol2];
+                        if (tgtVal * pieceColor <= 0) {
+                            Position p = new Position(tgtCol2, tgtRow2);
+                            moves.add(p);
+                        }
                     }
                 }
             }
@@ -477,7 +479,7 @@ class ChessMovement {
             n = n + 1;
             num++;
         }
- ////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////
         return moves;
     }
 
@@ -608,5 +610,13 @@ class ChessMovement {
 
     private static boolean inBounds(int row, int col, int bound) {
         return row > -1 && row < bound && col > -1 && col < bound;
+    }
+
+    private static boolean isSameColor(int color, int[][] state, int row, int col) {
+        return color * state[row][col] > 0;
+    }
+
+    private static boolean isValid(int color, int[][]state, int row, int col) {
+        return inBounds(row, col, 8) && isSameColor(color, state, row, col);
     }
 }

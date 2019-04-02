@@ -15,10 +15,6 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 
-import javax.swing.event.ChangeEvent;
-import java.util.HashMap;
-
-
 class ChessGameController {
     private int[][] state = new int[8][8];
     private int[][] movementState = new int[8][8];
