@@ -17,7 +17,7 @@ class ChessMovement {
         }
     }
 
-    static int[][] applyMove(int[][]state, int fromRow, int fromCol, int toRow,int toCol) {
+    static int[][] applyMove(int[][] state, int fromRow, int fromCol, int toRow, int toCol) {
         int value = state[fromRow][fromCol];
         state[fromRow][fromCol] = 0;
         state[toRow][toCol] = value;
@@ -71,7 +71,7 @@ class ChessMovement {
         //movement of knight
         int[] rowOffset = {-2, 2};
         int[] colOffset = {-1, 1};
-        for(int side : rowOffset) {
+        for (int side : rowOffset) {
             int tgtCol = 0;
             int tgtRow = 0;
 
@@ -115,7 +115,7 @@ class ChessMovement {
         //bishop can move diagonally to the left
         int[] rowOffset = {-1};
         int[] colOffset = {-1};
-        while(num < 8 && !isBlocked) {
+        while (num < 8 && !isBlocked) {
             for (int side : rowOffset) {
                 for (int side2 : colOffset) {
                     int tgtRow = side + row + i;
@@ -123,32 +123,32 @@ class ChessMovement {
 
                     if (isValid(pieceColor, gameState, tgtRow, tgtCol)) {
                         //check to see when can attack ( same color)
-                    int tgtVal = gameState[tgtRow][tgtCol];
+                        int tgtVal = gameState[tgtRow][tgtCol];
                         if (tgtVal * pieceColor <= 0) {
                             Position p = new Position(tgtCol, tgtRow);
                             moves.add(p);
                         }
-                    }else{
+                    } else {
                         isBlocked = true;
                         break;
                     }
                 }
-                if(isBlocked){
+                if (isBlocked) {
                     break;
                 }
             }
-            i = i -1;
+            i = i - 1;
             num++;
         }
 
 
         //bishop can move diagonally to the right
         num = 0;
-        int j =0;
+        int j = 0;
         int[] rowOffset2 = {-1};
         int[] colOffset2 = {1};
 
-        while(num < 8 && !isBlocked2) {
+        while (num < 8 && !isBlocked2) {
             for (int side3 : rowOffset2) {
                 for (int side4 : colOffset2) {
                     int tgtRow2 = side3 + row + j;
@@ -161,26 +161,26 @@ class ChessMovement {
                             Position p = new Position(tgtCol2, tgtRow2);
                             moves.add(p);
                         }
-                    }else{
+                    } else {
                         isBlocked2 = true;
                         break;
                     }
                 }
-                if(isBlocked2){
+                if (isBlocked2) {
                     break;
                 }
             }
-            j = j -1;
+            j = j - 1;
             num++;
         }
 
 
         //bishop can move down diagonally to the right
         num = 0;
-        int k =0;
+        int k = 0;
         int[] rowOffset3 = {1};
         int[] colOffset3 = {1};
-        while(num < 8 && !isBlocked3) {
+        while (num < 8 && !isBlocked3) {
             for (int side5 : rowOffset3) {
                 for (int side6 : colOffset3) {
                     int tgtRow3 = side5 + row + k;
@@ -191,12 +191,12 @@ class ChessMovement {
 
                         Position p = new Position(tgtCol3, tgtRow3);
                         moves.add(p);
-                    }else{
+                    } else {
                         isBlocked3 = true;
                         break;
                     }
                 }
-                if(isBlocked3){
+                if (isBlocked3) {
                     break;
                 }
             }
@@ -207,11 +207,11 @@ class ChessMovement {
 
         //bishop can move down diagonally to the left
         num = 0;
-        int l =0;
+        int l = 0;
         int[] rowOffset4 = {1};
         int[] colOffset4 = {-1};
 
-        while(num < 8 && !isBlocked4){
+        while (num < 8 && !isBlocked4) {
             for (int side7 : rowOffset4) {
                 for (int side8 : colOffset4) {
                     int tgtRow4 = side7 + row - l;
@@ -222,12 +222,12 @@ class ChessMovement {
 
                         Position p = new Position(tgtCol4, tgtRow4);
                         moves.add(p);
-                    }else{
+                    } else {
                         isBlocked4 = true;
                         break;
                     }
                 }
-                if(isBlocked4){
+                if (isBlocked4) {
                     break;
                 }
             }
@@ -245,100 +245,77 @@ class ChessMovement {
         //get the value of the present piece to determine set
         int pieceColor = gameState[row][col];
 
-        boolean isBlocked = false;
         //movement of rook
         int[] rowOffset = {1};
         int[] colOffset = {1};
 
         //rook can move up
-        int i = 0;
-        int num = 0;
-        while(num < 8 && !isBlocked){
-            for(int side : rowOffset) {
-                int tgtRow = row + i;
+        int i = 1;
+        boolean isBlocked = false;
+        boolean isBlocked2 = false;
+        boolean isBlocked3 = false;
+        boolean isBlocked4 = false;
 
-                if (isValid(pieceColor, gameState, tgtRow, col)) {
-                    //check to see when can attack ( same color)
-                    Position p = new Position(col, tgtRow);
-                    moves.add(p);
+        while (!isBlocked){
 
-                }else{
-                    isBlocked = true;
-                    break;
-                }
+            int tgtRow = row - i;
 
+            if (isValid(pieceColor, gameState, tgtRow, col)) {
+                //check to see when can attack ( same color)
+                Position p = new Position(col, tgtRow);
+                moves.add(p);
+            } else {
+                isBlocked = true;
             }
-            i = i -1;
-            num++;
+
+            i++;
         }
 
         //rook can move left
-        isBlocked = false;
-        num = 0;
-        int j = 0;
-        while(num < 8 && !isBlocked){
-            for(int side2 : colOffset) {
-                int tgtCol = col - j;
+        int j = 1;
+        while (!isBlocked2) {
+            int tgtCol = col - j;
 
-                if (isValid(pieceColor, gameState, row, tgtCol)) {
-                    //check to see when can attack ( same color)
-
-                    Position p = new Position(tgtCol, row);
-                    moves.add(p);
-                }else{
-                    isBlocked = true;
-                    break;
-                }
-
+            if (isValid(pieceColor, gameState, row, tgtCol)) {
+                //check to see when can attack ( same color)
+                Position p = new Position(tgtCol, row);
+                moves.add(p);
+            } else {
+                isBlocked2 = true;
             }
-            j = j + 1;
-            num++;
+
+            j++;
         }
 
         //rook can move down
-        isBlocked = false;
-        num = 0;
-        int m = 0;
-        while(num < 8 && !isBlocked){
-            for(int side3 : rowOffset) {
-                int tgtRow2 = row + m;
+        int m = 1;
+        while (!isBlocked3) {
+            int tgtRow2 = row + m;
 
-                if (isValid(pieceColor, gameState, tgtRow2, col)) {
-                    //check to see when can attack ( same color)
-
-                    Position p = new Position(col, tgtRow2);
-                    moves.add(p);
-                }else{
-                    isBlocked = true;
-                    break;
-                }
-
+            if (isValid(pieceColor, gameState, tgtRow2, col)) {
+                //check to see when can attack ( same color)
+                Position p = new Position(col, tgtRow2);
+                moves.add(p);
+            } else {
+                isBlocked3 = true;
             }
-            m = m + 1;
-            num++;
+            m++;
         }
 
         //rook can move right
-        isBlocked = false;
-        num = 0;
-        int n = 0;
-        while(num < 8 && !isBlocked){
-            for(int side4 : colOffset) {
-                int tgtCol2 = col + n;
+        int n = 1;
+        while (!isBlocked4) {
 
-                if (isValid(pieceColor, gameState, row, tgtCol2)) {
-                    //check to see when can attack ( same color)
+            int tgtCol2 = col + n;
 
-                    Position p = new Position(tgtCol2, row);
-                    moves.add(p);
-                }else{
-                    isBlocked = true;
-                    break;
-                }
-
+            if (isValid(pieceColor, gameState, row, tgtCol2)) {
+                //check to see when can attack ( same color)
+                Position p = new Position(tgtCol2, row);
+                moves.add(p);
+            } else {
+                isBlocked4 = true;
             }
-            n = n + 1;
-            num++;
+            n++;
         }
 
 
@@ -364,8 +341,8 @@ class ChessMovement {
         // get the value of the present piece to determine set
         int pieceColor = gameState[row][col];
 
-        int[] rowOffset = {-1,1};
-        int[] colOffset = {-1,1};
+        int[] rowOffset = {-1, 1};
+        int[] colOffset = {-1, 1};
 
         //king can move diagonally
         boolean isBlocked = false;
@@ -379,12 +356,12 @@ class ChessMovement {
 
                     Position p = new Position(tgtCol, tgtRow);
                     moves.add(p);
-                }else{
+                } else {
                     isBlocked = true;
                     break;
                 }
             }
-            if(isBlocked){
+            if (isBlocked) {
                 break;
             }
 
@@ -392,53 +369,53 @@ class ChessMovement {
 
         //king can move up
         int maxDistance = 1;
-        for(int i = 1;  i <= maxDistance; i++){
+        for (int i = 1; i <= maxDistance; i++) {
             int tgtRow2 = row - i;
             if (isValid(pieceColor, gameState, tgtRow2, col)) {
                 //check to see when can attack ( same color)
 
                 Position p = new Position(col, tgtRow2);
                 moves.add(p);
-            }else{
+            } else {
                 break;
             }
         }
 
         //king can move down
-        for(int i = 1;  i <= maxDistance; i++){
+        for (int i = 1; i <= maxDistance; i++) {
             int tgtRow3 = row + i;
             if (isValid(pieceColor, gameState, tgtRow3, col)) {
                 //check to see when can attack ( same color)
 
                 Position p = new Position(col, tgtRow3);
                 moves.add(p);
-            }else{
+            } else {
                 break;
             }
         }
 
         //king can move right
-        for(int i = 1;  i <= maxDistance; i++){
+        for (int i = 1; i <= maxDistance; i++) {
             int tgtCol2 = col + i;
             if (isValid(pieceColor, gameState, row, tgtCol2)) {
                 //check to see when can attack ( same color)
 
                 Position p = new Position(tgtCol2, row);
                 moves.add(p);
-            }else {
+            } else {
                 break;
             }
         }
 
         //king can move left
-        for(int i = 1;  i <= maxDistance; i++){
+        for (int i = 1; i <= maxDistance; i++) {
             int tgtCol3 = col - i;
             if (isValid(pieceColor, gameState, row, tgtCol3)) {
                 //check to see when can attack ( same color)
 
                 Position p = new Position(tgtCol3, row);
                 moves.add(p);
-            }else{
+            } else {
                 break;
             }
         }
@@ -507,7 +484,7 @@ class ChessMovement {
         return color * state[row][col] > 0;
     }
 
-    private static boolean isValid(int color, int[][]state, int row, int col) {
+    private static boolean isValid(int color, int[][] state, int row, int col) {
         return inBounds(row, col, 8) && !isSameColor(color, state, row, col);
     }
 }
