@@ -245,10 +245,6 @@ class ChessMovement {
         //get the value of the present piece to determine set
         int pieceColor = gameState[row][col];
 
-        //movement of rook
-        int[] rowOffset = {1};
-        int[] colOffset = {1};
-
         //rook can move up
         int i = 1;
         boolean isBlocked = false;
@@ -261,7 +257,6 @@ class ChessMovement {
             int tgtRow = row - i;
 
             if (isValid(pieceColor, gameState, tgtRow, col)) {
-                //check to see when can attack ( same color)
                 Position p = new Position(col, tgtRow);
                 moves.add(p);
             } else {
@@ -341,15 +336,38 @@ class ChessMovement {
         // get the value of the present piece to determine set
         int pieceColor = gameState[row][col];
 
-        int[] rowOffset = {-1, 1};
-        int[] colOffset = {-1, 1};
+        int[] rowOffset = {1};
+        int[] colOffset = {-1};
 
-        //king can move diagonally
+        //king can move diagonally to the right
         boolean isBlocked = false;
-        for (int side : rowOffset) {
-            for (int side2 : colOffset) {
-                int tgtRow = side + row;
-                int tgtCol = side2 + col;
+            for (int side : rowOffset) {
+                for (int side2 : colOffset) {
+                    int tgtRow = row - 1;
+                    int tgtCol = col + 1;
+
+                    if (isValid(pieceColor, gameState, tgtRow, tgtCol)) {
+                        //check to see when can attack ( same color)
+
+                        Position p = new Position(tgtCol, tgtRow);
+                        moves.add(p);
+                    } else {
+                        isBlocked = true;
+                        break;
+                    }
+                }
+                if (isBlocked) {
+                    break;
+                }
+
+            }
+
+        //king can move diagonally to the left
+        boolean isBlocked2 = false;
+        for (int side3 : rowOffset) {
+            for (int side4 : colOffset) {
+                int tgtRow = row - 1;
+                int tgtCol = col - 1;
 
                 if (isValid(pieceColor, gameState, tgtRow, tgtCol)) {
                     //check to see when can attack ( same color)
@@ -357,15 +375,63 @@ class ChessMovement {
                     Position p = new Position(tgtCol, tgtRow);
                     moves.add(p);
                 } else {
-                    isBlocked = true;
+                    isBlocked2 = true;
                     break;
                 }
             }
-            if (isBlocked) {
+            if (isBlocked2) {
                 break;
             }
 
         }
+
+
+        //king can move diagonally down and to the left
+        boolean isBlocked3 = false;
+        for (int side5 : rowOffset) {
+            for (int side6 : colOffset) {
+                int tgtRow = row + 1;
+                int tgtCol = col - 1;
+
+                if (isValid(pieceColor, gameState, tgtRow, tgtCol)) {
+                    //check to see when can attack ( same color)
+
+                    Position p = new Position(tgtCol, tgtRow);
+                    moves.add(p);
+                } else {
+                    isBlocked3 = true;
+                    break;
+                }
+            }
+            if (isBlocked3) {
+                break;
+            }
+
+        }
+
+        //king can move diagonally down and to the right
+        boolean isBlocked4 = false;
+        for (int side7 : rowOffset) {
+            for (int side8 : colOffset) {
+                int tgtRow = row + 1;
+                int tgtCol = col + 1;
+
+                if (isValid(pieceColor, gameState, tgtRow, tgtCol)) {
+                    //check to see when can attack ( same color)
+
+                    Position p = new Position(tgtCol, tgtRow);
+                    moves.add(p);
+                } else {
+                    isBlocked4 = true;
+                    break;
+                }
+            }
+            if (isBlocked4) {
+                break;
+            }
+
+        }
+
 
         //king can move up
         int maxDistance = 1;
