@@ -8,8 +8,8 @@ public class Cli {
 
     public static void main(String args[]) {
 
-        String host = "10.236.25.78";
-        int port = 4000;
+        String host = "10.236.28.14";
+        int port = 8000;
 
         try (Socket socket = new Socket(host,port)) {
             PrintWriter out = new PrintWriter(socket.getOutputStream(),true);
