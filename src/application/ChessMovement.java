@@ -117,9 +117,11 @@ class ChessMovement {
                     if (isValid(pieceColor, gameState, tgtRow, tgtCol)) {
                         //check to see when can attack ( same color)
                         int tgtVal = gameState[tgtRow][tgtCol];
-                        if (tgtVal * pieceColor <= 0) {
-                            Move p = new Move(tgtRow, tgtCol, row, col);
-                            moves.add(p);
+                        Move p = new Move(tgtRow, tgtCol, row, col);
+                        moves.add(p);
+                        if (isOpponent(tgtVal, pieceColor)) {
+                            isBlocked = true;
+                            break;
                         }
                     } else {
                         isBlocked = true;
@@ -545,5 +547,9 @@ class ChessMovement {
 
     private static boolean isValid(int color, int[][] state, int row, int col) {
         return inBounds(row, col, 8) && !isSameColor(color, state, row, col);
+    }
+
+    private static boolean isOpponent(int tgtColor, int pieceColor) {
+        return tgtColor * pieceColor < 0;
     }
 }

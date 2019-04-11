@@ -11,15 +11,28 @@ class ChessAi implements ChessMoveMakeable {
 
     @Override
     public Move getMove(int[][] state) {
-        return makeMove(state);
+        int depth = 3;
+        ArrayList<Tree.Node<Move>> moves = buildMoveTree(ChessState.getCopy(state), depth, color);
+        ArrayList<Integer> treeValues = new ArrayList<>();
+
+        // run minimax on each tree and store the associated depth
+        for (Tree.Node<Move> move : moves) {
+            treeValues.add(MiniMax(depth, color > 0, move, 0, 0));
+        }
+
+        // Get the index of thte max minimax return and take the root move.
+        int index = 0;
+        int max = 0;
+        for (int i = 0; i < treeValues.size(); i++) {
+            if (treeValues.get(i) > max) {
+                max = treeValues.get(i);
+                index = i;
+            }
+        }
+        return moves.get(index).data;
     }
 
-    private Move makeMove(int[][] state) {
-        ArrayList<Tree.Node<Move>> moves = buildMoveTree(state, 3, color);
-        return moves.get(0).data;
-    }
-
-    private  int sumMatrix(int[][] matrix) {
+    private int sumMatrix(int[][] matrix) {
         int sum = 0;
         for (int[] row : matrix) {
             for (int col : row) {
@@ -30,14 +43,12 @@ class ChessAi implements ChessMoveMakeable {
     }
 
     private ArrayList<Tree.Node<Move>> buildMoveTree(int[][]state, int depth, int color) {
-        ArrayList<Move> moves = hypothesizeMoves(state, color);
-        // a list of initial moves
-        ArrayList<Tree.Node<Move>> forest = new ArrayList<>();
+        int[][] stateCopy = ChessState.getCopy(state);
+        ArrayList<Move> moves = hypothesizeMoves(stateCopy, color);
 
-        for (Move move : moves) {
-            Tree.Node<Move> node = new Tree.Node<>(move);
-            forest.add(node);
-        }
+        ArrayList<Tree.Node<Move>> forest = new ArrayList<>();
+        for (Move move : moves)
+            forest.add(new Tree.Node<>(move, stateCopy));
 
         if (depth == 0) {
             return forest;
@@ -46,9 +57,9 @@ class ChessAi implements ChessMoveMakeable {
         for (Tree.Node<Move> node : forest) {
             // if depth is even, calc AI moves
             if (depth % 2 == 0) {
-                node.children = buildMoveTree(ChessMovement.applyMove(state, node.data), depth - 1, color);
+                node.children = buildMoveTree(ChessMovement.applyMove(stateCopy, node.data), depth - 1, color);
             } else { // do opponent moves
-                node.children = buildMoveTree(ChessMovement.applyMove(state, node.data), depth - 1, color*-1);
+                node.children = buildMoveTree(ChessMovement.applyMove(stateCopy, node.data), depth - 1, color * -1);
             }
         }
 
@@ -56,12 +67,14 @@ class ChessAi implements ChessMoveMakeable {
     }
 
     private ArrayList<Move> hypothesizeMoves(int[][] state, int color) {
-        ArrayList<Move> moves = new ArrayList<>(16);
+        ArrayList<Move> moves = new ArrayList<>();
 
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 if (color * state[row][col] > 0) {
-                    moves.addAll(ChessMovement.getPotentialMovements(state, col, row));
+                    moves.addAll(ChessMovement.getPotentialMovements(ChessState.getCopy(state), col, row));
+                    String c = color > 1 ? "white" : "black";
+                    System.out.println(c + ": " + state[row][col] + " > " + moves.size() + " moves found");
                 }
             }
         }
@@ -69,43 +82,35 @@ class ChessAi implements ChessMoveMakeable {
     }
 
 
-    private  int MiniMax(int depth, Boolean maximizingPlayer, int values[][], int alpha, int beta) {
-        int MAX = 10000;
-        int MIN = -10000;
-
-        if (depth == 0 || depth == 3) {
-            // tree evaluated, return best.
+    private int MiniMax(int depth, Boolean maximizingPlayer, Tree.Node<Move> node, int alpha, int beta) {
+        if (depth == 0) {
+            int value = sumMatrix(ChessMovement.applyMove(ChessState.getCopy(node.state), node.data));
+            return value;
         }
 
         if (maximizingPlayer) {
-            int best = MIN;
+            int value = -10000;
 
-            // Recur for left and
-            // right children
-            for (int i = 0; i < 2; i++) {
-                int val = MiniMax(depth + 1, false, values, alpha, beta);
-                best = Math.max(best, val);
-                alpha = Math.max(alpha, best);
+            for (Tree.Node<Move> move : node.children) {
+                value = Math.max(value, MiniMax(depth - 1, false, move, alpha, beta));
+                alpha = Math.max(alpha, value);
 
                 // Alpha Beta Pruning
-                if (beta <= alpha) break;
+                if (alpha >= beta) break;
             }
-            return best;
+
+            return value;
         } else {
-            int best = MAX;
+            int value = 10000;
 
-            // Recur for left and
-            // right children
-            for (int i = 0; i < 2; i++) {
-
-                int val = MiniMax(depth + 1, true, values, alpha, beta);
-                best = Math.min(best, val);
-                beta = Math.min(beta, best);
+            for (Tree.Node<Move> move : node.children) {
+                value = Math.min(value, MiniMax(depth - 1, true, node, alpha, beta));
+                beta = Math.min(beta, value);
 
                 // Alpha Beta Pruning
-                if (beta <= alpha) break;
+                if (alpha >= beta) break;
             }
-            return best;
+            return value;
         }
     }
 }
@@ -113,18 +118,18 @@ class ChessAi implements ChessMoveMakeable {
 class Tree<T> {
     public Node<T> root;
 
-    public Tree(T rootData) {
-        root = new Node<T>(rootData);
+    public Tree(T rootData, int[][] state) {
+        root = new Node<T>(rootData, state);
     }
 
     public static class Node<T> {
         public T data;
-        public Node<T> parent;
+        public int[][] state;
         public ArrayList<Node<T>> children;
 
-        public Node(T data) {
+        public Node(T data, int[][] state) {
             this.data = data;
-            this.parent = null;
+            this.state = state;
             this.children = new ArrayList<>();
         }
     }

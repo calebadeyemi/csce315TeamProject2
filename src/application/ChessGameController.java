@@ -111,8 +111,8 @@ class ChessGameController {
         int fromCol = GridPane.getColumnIndex(selectedPiece);
         int fromRow = GridPane.getRowIndex(selectedPiece);
 
-        state = ChessMovement.applyMove(state, new Move(toRow, toCol, fromRow, fromCol));
-        state = ChessMovement.applyMove(state, opponent.getMove(state));
+        state = ChessMovement.applyMove(ChessState.getCopy(state), new Move(toRow, toCol, fromRow, fromCol));
+        state = ChessMovement.applyMove(ChessState.getCopy(state), opponent.getMove(ChessState.getCopy(state)));
     }
 
     private void updateScene() {
