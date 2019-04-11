@@ -11,16 +11,16 @@ class ChessAi implements ChessMoveMakeable {
 
     @Override
     public Move getMove(int[][] state) {
-        int depth = 3;
+        int depth = 2;
         ArrayList<Tree.Node<Move>> moves = buildMoveTree(ChessState.getCopy(state), depth, color);
         ArrayList<Integer> treeValues = new ArrayList<>();
 
-        // run minimax on each tree and store the associated depth
+        // run MiniMax on each tree and store the associated depth
         for (Tree.Node<Move> move : moves) {
             treeValues.add(MiniMax(depth, color > 0, move, 0, 0));
         }
 
-        // Get the index of thte max minimax return and take the root move.
+        // Get the index of the best minimax return and take the associated root move.
         int index = 0;
         int max = 0;
         for (int i = 0; i < treeValues.size(); i++) {
@@ -43,24 +43,23 @@ class ChessAi implements ChessMoveMakeable {
     }
 
     private ArrayList<Tree.Node<Move>> buildMoveTree(int[][]state, int depth, int color) {
-        int[][] stateCopy = ChessState.getCopy(state);
-        ArrayList<Move> moves = hypothesizeMoves(stateCopy, color);
+        // generate a list of all initial moves and the initial state they moved from
+        ArrayList<Move> moves = hypothesizeMoves(ChessState.getCopy(state), color);
 
+        // for each initial move, generate a tree of moves.
         ArrayList<Tree.Node<Move>> forest = new ArrayList<>();
         for (Move move : moves)
-            forest.add(new Tree.Node<>(move, stateCopy));
+            forest.add(new Tree.Node<>(move, ChessState.getCopy(state)));
 
+        // if we have reached the bottom of the tree, stop
         if (depth == 0) {
             return forest;
         }
 
+        // else, created child moves based on the current state with the associated move applied to other player
         for (Tree.Node<Move> node : forest) {
-            // if depth is even, calc AI moves
-            if (depth % 2 == 0) {
-                node.children = buildMoveTree(ChessMovement.applyMove(stateCopy, node.data), depth - 1, color);
-            } else { // do opponent moves
-                node.children = buildMoveTree(ChessMovement.applyMove(stateCopy, node.data), depth - 1, color * -1);
-            }
+                node.children = buildMoveTree(ChessMovement.applyMove(ChessState.getCopy(state), node.data), depth - 1,
+                        color * -1);
         }
 
         return forest;
@@ -73,8 +72,6 @@ class ChessAi implements ChessMoveMakeable {
             for (int col = 0; col < 8; col++) {
                 if (color * state[row][col] > 0) {
                     moves.addAll(ChessMovement.getPotentialMovements(ChessState.getCopy(state), col, row));
-                    String c = color > 1 ? "white" : "black";
-                    System.out.println(c + ": " + state[row][col] + " > " + moves.size() + " moves found");
                 }
             }
         }
@@ -83,13 +80,15 @@ class ChessAi implements ChessMoveMakeable {
 
 
     private int MiniMax(int depth, Boolean maximizingPlayer, Tree.Node<Move> node, int alpha, int beta) {
-        if (depth == 0) {
-            int value = sumMatrix(ChessMovement.applyMove(ChessState.getCopy(node.state), node.data));
-            return value;
-        }
+ //       ChessState.printState(node.state);
+ //       int v = sumMatrix(ChessMovement.applyMove(ChessState.getCopy(node.state), node.data));
+ //       System.out.println(v + " points.");
 
-        if (maximizingPlayer) {
-            int value = -10000;
+        int value = 0;
+        if (depth == 0) {
+            value = sumMatrix(ChessMovement.applyMove(ChessState.getCopy(node.state), node.data));
+        } else if (maximizingPlayer) {
+            value = -10000;
 
             for (Tree.Node<Move> move : node.children) {
                 value = Math.max(value, MiniMax(depth - 1, false, move, alpha, beta));
@@ -98,10 +97,8 @@ class ChessAi implements ChessMoveMakeable {
                 // Alpha Beta Pruning
                 if (alpha >= beta) break;
             }
-
-            return value;
         } else {
-            int value = 10000;
+            value = 10000;
 
             for (Tree.Node<Move> move : node.children) {
                 value = Math.min(value, MiniMax(depth - 1, true, node, alpha, beta));
@@ -110,8 +107,9 @@ class ChessAi implements ChessMoveMakeable {
                 // Alpha Beta Pruning
                 if (alpha >= beta) break;
             }
-            return value;
         }
+
+        return value;
     }
 }
 
