@@ -510,13 +510,11 @@ class ChessMovement {
         // pieces.
         for (int dist = 1; dist <= maxDist; dist++) {
             int mvmtRow = row + dist * dir;
-            if (isValid(pieceColor, gameState, col, mvmtRow)) {
-                // if another character in the way, stop trying
-                if (gameState[mvmtRow][col] != 0) {
-                    break;
-                }
+            if (isValid(pieceColor, gameState, mvmtRow, col)) {
                 Move m = new Move(mvmtRow, col, row, col);
                 moves.add(m);
+            } else {
+                break;
             }
         }
 
@@ -526,9 +524,8 @@ class ChessMovement {
             int tgtRow = row + dir;
             int tgtCol = col + side;
             if (isValid(pieceColor, gameState, tgtRow, tgtCol)) {
-                // check if the target value is the same color, else it is attackable
                 int tgtVal = gameState[tgtRow][tgtCol];
-                if (tgtVal * pieceColor < 0) {
+                if (isOpponent(tgtVal, pieceColor)) {
                     Move m = new Move(tgtRow, tgtCol, row, col);
                     moves.add(m);
                 }
@@ -546,7 +543,11 @@ class ChessMovement {
     }
 
     private static boolean isValid(int color, int[][] state, int row, int col) {
-        return inBounds(row, col, 8) && !isSameColor(color, state, row, col);
+        boolean bounded = inBounds(row, col, 8);
+        boolean attackable = false;
+        if (bounded)
+            attackable = !isSameColor(color, state, row, col);
+        return bounded && attackable;
     }
 
     private static boolean isOpponent(int tgtColor, int pieceColor) {
