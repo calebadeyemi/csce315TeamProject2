@@ -179,11 +179,11 @@ class ChessMovement {
                 for (int side6 : colOffset3) {
                     int tgtRow3 = side5 + row + k;
                     int tgtCol3 = side6 + col + k;
-                    int tgtVal = gameState[tgtRow3][tgtCol3];
-                    Move m = new Move(tgtRow3, tgtCol3, row, col);
-                    moves.add(m);
 
                     if (isValid(pieceColor, gameState, tgtRow3, tgtCol3)) {
+                        int tgtVal = gameState[tgtRow3][tgtCol3];
+                        Move m = new Move(tgtRow3, tgtCol3, row, col);
+                        moves.add(m);
                         if(isOpponent(tgtVal, pieceColor)){
                             isBlocked3 = true;
                         }
@@ -213,11 +213,11 @@ class ChessMovement {
                 for (int side8 : colOffset4) {
                     int tgtRow4 = side7 + row - l;
                     int tgtCol4 = side8 + col + l;
-                    int tgtVal = gameState[tgtRow4][tgtCol4];
-                    Move m = new Move(tgtRow4, tgtCol4, row, col);
-                    moves.add(m);
 
                     if (isValid(pieceColor, gameState, tgtRow4, tgtCol4)) {
+                        int tgtVal = gameState[tgtRow4][tgtCol4];
+                        Move m = new Move(tgtRow4, tgtCol4, row, col);
+                        moves.add(m);
                         if(isOpponent(tgtVal, pieceColor)){
                             isBlocked4 = true;
                         }
