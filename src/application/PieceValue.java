@@ -7,6 +7,8 @@ class PieceValue {
     static final int Bishop = 30;
     static final int Knight = 29;
     static final int Pawn = 10;
+    static final int White = 1;
+    static final int Black = -1;
     static final String[] Pieces = {"king", "queen", "rook", "bishop", "knight", "pawn"};
     static final String[] Colors = {"black", "white"};
 }

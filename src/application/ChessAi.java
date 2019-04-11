@@ -1,41 +1,25 @@
 package application;
 
-import static application.PieceValue.Pawn;
-
-import java.io.*;
+import java.util.ArrayList;
 
 class ChessAi implements ChessMoveMakeable {
+    int color;
+
+    ChessAi(int color) {
+        this.color = color;
+    }
 
     @Override
-    public int[][] getMove(int[][] state) {
+    public Move getMove(int[][] state) {
         return makeMove(state);
     }
 
-    private static int[][] makeMove(int[][] state) {
-        int[][] moves = new int[8][8];
-        int row, col = 0;
-        for (row = 0; row < 8; row++) {
-            for (col = 0; col < 8; col++) {
-                if (state[row][col] == Pawn) {
-                    moves = ChessMovement.getPotentialMovements(state, col, row);
-                    // if there are moves to do
-                    if (sumMatrix(moves) > 0) {
-                        int mvRow, mvCol;
-                        for (mvRow = 0; mvRow < 8; mvRow++) {
-                            for (mvCol = 0; mvCol < 8; mvCol++) {
-                                if (moves[mvRow][mvCol] > 0) {
-                                    return ChessMovement.applyMove(state, row, col, mvRow, mvCol);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return state;
+    private Move makeMove(int[][] state) {
+        ArrayList<Move> moves = hypothesizeMoves(state, 3);
+        return moves.get(0);
     }
 
-    private static int sumMatrix(int[][] matrix) {
+    private  int sumMatrix(int[][] matrix) {
         int sum = 0;
         for (int[] row : matrix) {
             for (int col : row) {
@@ -45,8 +29,23 @@ class ChessAi implements ChessMoveMakeable {
         return sum;
     }
 
+    private  ArrayList<Move> hypothesizeMoves(int[][] state, int depth) {
+        ArrayList<Move> moves = new ArrayList<>(60000);
 
-    static int minimax(int depth, Boolean maximizingPlayer, int values[][], int alpha, int beta) {
+        for (; depth >= 0; depth--) {
+            for (int row = 0; row < 8; row++) {
+                for (int col = 0; col < 8; col++) {
+                    if (color * state[row][col] > 0) {
+                        moves.addAll(ChessMovement.getPotentialMovements(state, col, row));
+                    }
+                }
+            }
+        }
+        return moves;
+    }
+
+
+    private  int MiniMax(int depth, Boolean maximizingPlayer, int values[][], int alpha, int beta) {
         int MAX = 10000;
         int MIN = -10000;
         // Terminating condition. i.e
@@ -61,7 +60,7 @@ class ChessAi implements ChessMoveMakeable {
             // Recur for left and
             // right children
             for (int i = 0; i < 2; i++) {
-                int val = minimax(depth + 1, false, values, alpha, beta);
+                int val = MiniMax(depth + 1, false, values, alpha, beta);
                 best = Math.max(best, val);
                 alpha = Math.max(alpha, best);
 
@@ -76,7 +75,7 @@ class ChessAi implements ChessMoveMakeable {
             // right children
             for (int i = 0; i < 2; i++) {
 
-                int val = minimax(depth + 1, true, values, alpha, beta);
+                int val = MiniMax(depth + 1, true, values, alpha, beta);
                 best = Math.min(best, val);
                 beta = Math.min(beta, best);
 
@@ -86,6 +85,4 @@ class ChessAi implements ChessMoveMakeable {
             return best;
         }
     }
-
-
 }

@@ -15,13 +15,15 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 
+import java.util.ArrayList;
+
 class ChessGameController {
     private int[][] state = new int[8][8];
     private int[][] movementState = new int[8][8];
     private Pane root;
     private GridPane board;
     private Node selectedPiece;
-    private ChessMoveMakeable opponent = new ChessAi();
+    private ChessMoveMakeable opponent = new ChessAi(PieceValue.White);
 
     private EventHandler<Event> handleSelectPiece = event -> getPieceMoves((Node) event.getSource());
     private EventHandler<Event> handleSelectMove = event -> movePiece((Node) event.getSource());
@@ -53,7 +55,7 @@ class ChessGameController {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 switch (newValue.intValue()) {
-                    case 0 : opponent = new ChessAi(); break;
+                    case 0 : opponent = new ChessAi(PieceValue.Black); break;
                     case 1 : opponent = new LocalOpponent(); break;
                     case 2 : opponent = new RemoteOpponent(); break;
                 }
@@ -94,7 +96,9 @@ class ChessGameController {
         int row = GridPane.getRowIndex(piece);
         if (state[row][col] < 0) {
             movementState = new int[8][8];
-            movementState = ChessMovement.getPotentialMovements(state, col, row);
+            ArrayList<Move> moves = ChessMovement.getPotentialMovements(state, col, row);
+            for (Move move : moves)
+                movementState[move.rowTo][move.colTo] = 1;
         } else {
             selectedPiece = null;
         }
@@ -107,8 +111,8 @@ class ChessGameController {
         int fromCol = GridPane.getColumnIndex(selectedPiece);
         int fromRow = GridPane.getRowIndex(selectedPiece);
 
-        state = ChessMovement.applyMove(state, fromRow, fromCol, toRow, toCol);
-        state = opponent.getMove(state);
+        state = ChessMovement.applyMove(state, new Move(toRow, toCol, fromRow, fromCol));
+        state = ChessMovement.applyMove(state, opponent.getMove(state));
     }
 
     private void updateScene() {

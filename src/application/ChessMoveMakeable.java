@@ -1,5 +1,5 @@
 package application;
 
 public interface ChessMoveMakeable {
-     int[][] getMove(int[][] state);
+     Move getMove(int[][] state);
 }

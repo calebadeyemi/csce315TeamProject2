@@ -17,15 +17,15 @@ class ChessMovement {
         }
     }
 
-    static int[][] applyMove(int[][] state, int fromRow, int fromCol, int toRow, int toCol) {
-        int value = state[fromRow][fromCol];
-        state[fromRow][fromCol] = 0;
-        state[toRow][toCol] = value;
+    static int[][] applyMove(int[][] state, Move move) {
+        int value = state[move.rowFrom][move.colFrom];
+        state[move.rowFrom][move.colFrom] = 0;
+        state[move.rowTo][move.colTo] = value;
         return state;
     }
 
-    static int[][] getPotentialMovements(int[][] state, int col, int row) {
-        List<Position> potentialMoves;
+    static ArrayList<Move> getPotentialMovements(int[][] state, int col, int row) {
+        ArrayList<Move> potentialMoves;
 
         int value = state[row][col];
         switch (Math.abs(value)) {
@@ -51,18 +51,11 @@ class ChessMovement {
                 potentialMoves = null;
         }
 
-        int[][] potentialMovementState = new int[8][8];
-        if (potentialMoves != null) {
-            for (Position move : potentialMoves) {
-                potentialMovementState[move.row][move.col] = 1;
-            }
-        }
-
-        return potentialMovementState;
+        return potentialMoves;
     }
 
-    private static ArrayList<Position> knightMoves(int[][] gameState, int col, int row) {
-        ArrayList<Position> moves = new ArrayList<>();
+    private static ArrayList<Move> knightMoves(int[][] gameState, int col, int row) {
+        ArrayList<Move> moves = new ArrayList<>();
 
 
         //get the value of the present piece to determine set
@@ -80,16 +73,16 @@ class ChessMovement {
                 tgtCol = side2 + col;
 
                 if (isValid(pieceColor, gameState, tgtRow, tgtCol)) {
-                    Position p = new Position(tgtCol, tgtRow);
-                    moves.add(p);
+                    Move m = new Move(tgtRow, tgtCol, row, col);
+                    moves.add(m);
                 }
 
                 tgtRow = row + side2;
                 tgtCol = col + side;
 
                 if (isValid(pieceColor, gameState, tgtRow, tgtCol)) {
-                    Position p = new Position(tgtCol, tgtRow);
-                    moves.add(p);
+                    Move m = new Move(tgtRow, tgtCol, row, col);
+                    moves.add(m);
                 }
             }
         }
@@ -98,8 +91,8 @@ class ChessMovement {
         return moves;
     }
 
-    private static ArrayList<Position> bishopMoves(int[][] gameState, int col, int row) {
-        ArrayList<Position> moves = new ArrayList<>();
+    private static ArrayList<Move> bishopMoves(int[][] gameState, int col, int row) {
+        ArrayList<Move> moves = new ArrayList<>();
 
         //get the value of the present piece to determine set
         int pieceColor = gameState[row][col];
@@ -125,7 +118,7 @@ class ChessMovement {
                         //check to see when can attack ( same color)
                         int tgtVal = gameState[tgtRow][tgtCol];
                         if (tgtVal * pieceColor <= 0) {
-                            Position p = new Position(tgtCol, tgtRow);
+                            Move p = new Move(tgtRow, tgtCol, row, col);
                             moves.add(p);
                         }
                     } else {
@@ -158,7 +151,7 @@ class ChessMovement {
                         //check to see when can attack ( same color)
                         int tgtVal = gameState[tgtRow2][tgtCol2];
                         if (tgtVal * pieceColor <= 0) {
-                            Position p = new Position(tgtCol2, tgtRow2);
+                            Move p = new Move(tgtRow2, tgtCol2, row, col);
                             moves.add(p);
                         }
                     } else {
@@ -189,8 +182,8 @@ class ChessMovement {
                     if (isValid(pieceColor, gameState, tgtRow3, tgtCol3)) {
                         //check to see when can attack ( same color)
 
-                        Position p = new Position(tgtCol3, tgtRow3);
-                        moves.add(p);
+                        Move m = new Move(tgtRow3, tgtCol3, row, col);
+                        moves.add(m);
                     } else {
                         isBlocked3 = true;
                         break;
@@ -220,8 +213,8 @@ class ChessMovement {
                     if (isValid(pieceColor, gameState, tgtRow4, tgtCol4)) {
                         //check to see when can attack ( same color)
 
-                        Position p = new Position(tgtCol4, tgtRow4);
-                        moves.add(p);
+                        Move m = new Move(tgtRow4, tgtCol4, row, col);
+                        moves.add(m);
                     } else {
                         isBlocked4 = true;
                         break;
@@ -239,8 +232,8 @@ class ChessMovement {
         return moves;
     }
 
-    private static ArrayList<Position> rookMoves(int[][] gameState, int col, int row) {
-        ArrayList<Position> moves = new ArrayList<>();
+    private static ArrayList<Move> rookMoves(int[][] gameState, int col, int row) {
+        ArrayList<Move> moves = new ArrayList<>();
 
         //get the value of the present piece to determine set
         int pieceColor = gameState[row][col];
@@ -257,8 +250,8 @@ class ChessMovement {
             int tgtRow = row - i;
 
             if (isValid(pieceColor, gameState, tgtRow, col)) {
-                Position p = new Position(col, tgtRow);
-                moves.add(p);
+                Move m = new Move(tgtRow, col, row, col);
+                moves.add(m);
             } else {
                 isBlocked = true;
             }
@@ -273,8 +266,8 @@ class ChessMovement {
 
             if (isValid(pieceColor, gameState, row, tgtCol)) {
                 //check to see when can attack ( same color)
-                Position p = new Position(tgtCol, row);
-                moves.add(p);
+                Move m = new Move(row, tgtCol, row, col);
+                moves.add(m);
             } else {
                 isBlocked2 = true;
             }
@@ -283,18 +276,18 @@ class ChessMovement {
         }
 
         //rook can move down
-        int m = 1;
+        int i1 = 1;
         while (!isBlocked3) {
-            int tgtRow2 = row + m;
+            int tgtRow2 = row + i1;
 
             if (isValid(pieceColor, gameState, tgtRow2, col)) {
                 //check to see when can attack ( same color)
-                Position p = new Position(col, tgtRow2);
-                moves.add(p);
+                Move m = new Move(tgtRow2, col, row, col);
+                moves.add(m);
             } else {
                 isBlocked3 = true;
             }
-            m++;
+            i1++;
         }
 
         //rook can move right
@@ -305,8 +298,8 @@ class ChessMovement {
 
             if (isValid(pieceColor, gameState, row, tgtCol2)) {
                 //check to see when can attack ( same color)
-                Position p = new Position(tgtCol2, row);
-                moves.add(p);
+                Move m = new Move(row, tgtCol2, row, col);
+                moves.add(m);
             } else {
                 isBlocked4 = true;
             }
@@ -317,9 +310,9 @@ class ChessMovement {
         return moves;
     }
 
-    private static ArrayList<Position> queenMoves(int[][] gameState, int col, int row) {
+    private static ArrayList<Move> queenMoves(int[][] gameState, int col, int row) {
 
-        ArrayList<Position> moves = new ArrayList<>();
+        ArrayList<Move> moves = new ArrayList<>();
 
         //get the value of the present piece to determine set
         int pieceColor = gameState[row][col];
@@ -330,8 +323,8 @@ class ChessMovement {
         return moves;
     }
 
-    private static ArrayList<Position> kingMoves(int[][] gameState, int col, int row) {
-        ArrayList<Position> moves = new ArrayList<>();
+    private static ArrayList<Move> kingMoves(int[][] gameState, int col, int row) {
+        ArrayList<Move> moves = new ArrayList<>();
 
         // get the value of the present piece to determine set
         int pieceColor = gameState[row][col];
@@ -349,8 +342,8 @@ class ChessMovement {
                     if (isValid(pieceColor, gameState, tgtRow, tgtCol)) {
                         //check to see when can attack ( same color)
 
-                        Position p = new Position(tgtCol, tgtRow);
-                        moves.add(p);
+                        Move m = new Move(tgtRow, tgtCol, row, col);
+                        moves.add(m);
                     } else {
                         isBlocked = true;
                         break;
@@ -372,8 +365,8 @@ class ChessMovement {
                 if (isValid(pieceColor, gameState, tgtRow, tgtCol)) {
                     //check to see when can attack ( same color)
 
-                    Position p = new Position(tgtCol, tgtRow);
-                    moves.add(p);
+                    Move m = new Move(tgtRow, tgtCol, row, col);
+                    moves.add(m);
                 } else {
                     isBlocked2 = true;
                     break;
@@ -396,8 +389,8 @@ class ChessMovement {
                 if (isValid(pieceColor, gameState, tgtRow, tgtCol)) {
                     //check to see when can attack ( same color)
 
-                    Position p = new Position(tgtCol, tgtRow);
-                    moves.add(p);
+                    Move m = new Move(tgtRow, tgtCol, row, col);
+                    moves.add(m);
                 } else {
                     isBlocked3 = true;
                     break;
@@ -419,8 +412,8 @@ class ChessMovement {
                 if (isValid(pieceColor, gameState, tgtRow, tgtCol)) {
                     //check to see when can attack ( same color)
 
-                    Position p = new Position(tgtCol, tgtRow);
-                    moves.add(p);
+                    Move m = new Move(tgtRow, tgtCol, row, col);
+                    moves.add(m);
                 } else {
                     isBlocked4 = true;
                     break;
@@ -440,8 +433,8 @@ class ChessMovement {
             if (isValid(pieceColor, gameState, tgtRow2, col)) {
                 //check to see when can attack ( same color)
 
-                Position p = new Position(col, tgtRow2);
-                moves.add(p);
+                Move m = new Move(col, tgtRow2, row, col);
+                moves.add(m);
             } else {
                 break;
             }
@@ -453,8 +446,8 @@ class ChessMovement {
             if (isValid(pieceColor, gameState, tgtRow3, col)) {
                 //check to see when can attack ( same color)
 
-                Position p = new Position(col, tgtRow3);
-                moves.add(p);
+                Move m = new Move(tgtRow3, col, row, col);
+                moves.add(m);
             } else {
                 break;
             }
@@ -466,8 +459,8 @@ class ChessMovement {
             if (isValid(pieceColor, gameState, row, tgtCol2)) {
                 //check to see when can attack ( same color)
 
-                Position p = new Position(tgtCol2, row);
-                moves.add(p);
+                Move m = new Move(row, tgtCol2, row, col);
+                moves.add(m);
             } else {
                 break;
             }
@@ -479,8 +472,8 @@ class ChessMovement {
             if (isValid(pieceColor, gameState, row, tgtCol3)) {
                 //check to see when can attack ( same color)
 
-                Position p = new Position(tgtCol3, row);
-                moves.add(p);
+                Move m = new Move(row, tgtCol3, row, col);
+                moves.add(m);
             } else {
                 break;
             }
@@ -489,8 +482,8 @@ class ChessMovement {
         return moves;
     }
 
-    private static ArrayList<Position> pawnMoves(int[][] gameState, int col, int row) {
-        ArrayList<Position> moves = new ArrayList<>();
+    private static ArrayList<Move> pawnMoves(int[][] gameState, int col, int row) {
+        ArrayList<Move> moves = new ArrayList<>();
 
         // get the value of the present piece to determine set
         int pieceColor = gameState[row][col];
@@ -520,8 +513,8 @@ class ChessMovement {
                 if (gameState[mvmtRow][col] != 0) {
                     break;
                 }
-                Position p = new Position(col, mvmtRow);
-                moves.add(p);
+                Move m = new Move(mvmtRow, col, row, col);
+                moves.add(m);
             }
         }
 
@@ -534,8 +527,8 @@ class ChessMovement {
                 // check if the target value is the same color, else it is attackable
                 int tgtVal = gameState[tgtRow][tgtCol];
                 if (tgtVal * pieceColor < 0) {
-                    Position p = new Position(tgtCol, tgtRow);
-                    moves.add(p);
+                    Move m = new Move(tgtRow, tgtCol, row, col);
+                    moves.add(m);
                 }
             }
         }
