@@ -65,8 +65,8 @@ class ChessMovement {
         int[] rowOffset = {-2, 2};
         int[] colOffset = {-1, 1};
         for (int side : rowOffset) {
-            int tgtCol = 0;
-            int tgtRow = 0;
+            int tgtCol;
+            int tgtRow;
 
             for (int side2 : colOffset) {
                 tgtRow = side + row;
@@ -115,7 +115,6 @@ class ChessMovement {
                     int tgtCol = side2 + col + i;
 
                     if (isValid(pieceColor, gameState, tgtRow, tgtCol)) {
-                        //check to see when can attack ( same color)
                         int tgtVal = gameState[tgtRow][tgtCol];
                         Move p = new Move(tgtRow, tgtCol, row, col);
                         moves.add(p);
@@ -150,11 +149,11 @@ class ChessMovement {
                     int tgtCol2 = side4 + col - j;
 
                     if (isValid(pieceColor, gameState, tgtRow2, tgtCol2)) {
-                        //check to see when can attack ( same color)
                         int tgtVal = gameState[tgtRow2][tgtCol2];
-                        if (tgtVal * pieceColor <= 0) {
-                            Move p = new Move(tgtRow2, tgtCol2, row, col);
-                            moves.add(p);
+                        Move p = new Move(tgtRow2, tgtCol2, row, col);
+                        moves.add(p);
+                        if (isOpponent(tgtVal, pieceColor)) {
+                            isBlocked2 = true;
                         }
                     } else {
                         isBlocked2 = true;
@@ -180,12 +179,15 @@ class ChessMovement {
                 for (int side6 : colOffset3) {
                     int tgtRow3 = side5 + row + k;
                     int tgtCol3 = side6 + col + k;
+                    int tgtVal = gameState[tgtRow3][tgtCol3];
+                    Move m = new Move(tgtRow3, tgtCol3, row, col);
+                    moves.add(m);
 
                     if (isValid(pieceColor, gameState, tgtRow3, tgtCol3)) {
-                        //check to see when can attack ( same color)
+                        if(isOpponent(tgtVal, pieceColor)){
+                            isBlocked3 = true;
+                        }
 
-                        Move m = new Move(tgtRow3, tgtCol3, row, col);
-                        moves.add(m);
                     } else {
                         isBlocked3 = true;
                         break;
@@ -211,12 +213,14 @@ class ChessMovement {
                 for (int side8 : colOffset4) {
                     int tgtRow4 = side7 + row - l;
                     int tgtCol4 = side8 + col + l;
+                    int tgtVal = gameState[tgtRow4][tgtCol4];
+                    Move m = new Move(tgtRow4, tgtCol4, row, col);
+                    moves.add(m);
 
                     if (isValid(pieceColor, gameState, tgtRow4, tgtCol4)) {
-                        //check to see when can attack ( same color)
-
-                        Move m = new Move(tgtRow4, tgtCol4, row, col);
-                        moves.add(m);
+                        if(isOpponent(tgtVal, pieceColor)){
+                            isBlocked4 = true;
+                        }
                     } else {
                         isBlocked4 = true;
                         break;
@@ -314,7 +318,7 @@ class ChessMovement {
 
     private static ArrayList<Move> queenMoves(int[][] gameState, int col, int row) {
 
-        ArrayList<Move> moves = new ArrayList<>();
+        ArrayList<Move> moves;
 
         //get the value of the present piece to determine set
         int pieceColor = gameState[row][col];
