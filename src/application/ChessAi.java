@@ -1,6 +1,6 @@
 package application;
 
-import java.util.ArrayList;
+import java.util.*;
 
 class ChessAi implements ChessMoveMakeable {
     int color;
@@ -15,8 +15,8 @@ class ChessAi implements ChessMoveMakeable {
     }
 
     private Move makeMove(int[][] state) {
-        ArrayList<Move> moves = hypothesizeMoves(state, 3);
-        return moves.get(0);
+        ArrayList<Tree.Node<Move>> moves = buildMoveTree(state, 3, color);
+        return moves.get(0).data;
     }
 
     private  int sumMatrix(int[][] matrix) {
@@ -29,15 +29,39 @@ class ChessAi implements ChessMoveMakeable {
         return sum;
     }
 
-    private  ArrayList<Move> hypothesizeMoves(int[][] state, int depth) {
-        ArrayList<Move> moves = new ArrayList<>(60000);
+    private ArrayList<Tree.Node<Move>> buildMoveTree(int[][]state, int depth, int color) {
+        ArrayList<Move> moves = hypothesizeMoves(state, color);
+        // a list of initial moves
+        ArrayList<Tree.Node<Move>> forest = new ArrayList<>();
 
-        for (; depth >= 0; depth--) {
-            for (int row = 0; row < 8; row++) {
-                for (int col = 0; col < 8; col++) {
-                    if (color * state[row][col] > 0) {
-                        moves.addAll(ChessMovement.getPotentialMovements(state, col, row));
-                    }
+        for (Move move : moves) {
+            Tree.Node<Move> node = new Tree.Node<>(move);
+            forest.add(node);
+        }
+
+        if (depth == 0) {
+            return forest;
+        }
+
+        for (Tree.Node<Move> node : forest) {
+            // if depth is even, calc AI moves
+            if (depth % 2 == 0) {
+                node.children = buildMoveTree(ChessMovement.applyMove(state, node.data), depth - 1, color);
+            } else { // do opponent moves
+                node.children = buildMoveTree(ChessMovement.applyMove(state, node.data), depth - 1, color*-1);
+            }
+        }
+
+        return forest;
+    }
+
+    private ArrayList<Move> hypothesizeMoves(int[][] state, int color) {
+        ArrayList<Move> moves = new ArrayList<>(16);
+
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                if (color * state[row][col] > 0) {
+                    moves.addAll(ChessMovement.getPotentialMovements(state, col, row));
                 }
             }
         }
@@ -48,10 +72,9 @@ class ChessAi implements ChessMoveMakeable {
     private  int MiniMax(int depth, Boolean maximizingPlayer, int values[][], int alpha, int beta) {
         int MAX = 10000;
         int MIN = -10000;
-        // Terminating condition. i.e
-        // leaf node is reached
-        if (depth == 3) {
-            // return values[][];
+
+        if (depth == 0 || depth == 3) {
+            // tree evaluated, return best.
         }
 
         if (maximizingPlayer) {
@@ -83,6 +106,26 @@ class ChessAi implements ChessMoveMakeable {
                 if (beta <= alpha) break;
             }
             return best;
+        }
+    }
+}
+
+class Tree<T> {
+    public Node<T> root;
+
+    public Tree(T rootData) {
+        root = new Node<T>(rootData);
+    }
+
+    public static class Node<T> {
+        public T data;
+        public Node<T> parent;
+        public ArrayList<Node<T>> children;
+
+        public Node(T data) {
+            this.data = data;
+            this.parent = null;
+            this.children = new ArrayList<>();
         }
     }
 }

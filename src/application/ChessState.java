@@ -17,9 +17,13 @@ class ChessState {
     };
 
     static int[][] getInitialPieceState() {
+        return getCopy(initialPieceState);
+    }
+
+    static int[][] getCopy(int[][] array) {
         int[][] copy = new int[8][8];
         for (int i = 0; i < 8; i++) {
-            System.arraycopy(initialPieceState[i], 0, copy[i], 0, 8);
+            System.arraycopy(array[i], 0, copy[i], 0, 8);
         }
         return copy;
     }
