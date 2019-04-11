@@ -256,9 +256,14 @@ class ChessMovement {
             int tgtRow = row - i;
 
             if (isValid(pieceColor, gameState, tgtRow, col)) {
+                int tgtVal = gameState[tgtRow][col];
                 Move m = new Move(tgtRow, col, row, col);
                 moves.add(m);
-            } else {
+                    if(isOpponent(tgtVal, pieceColor)){
+                        isBlocked = true;
+                    }
+
+            }else{
                 isBlocked = true;
             }
 
@@ -271,9 +276,13 @@ class ChessMovement {
             int tgtCol = col - j;
 
             if (isValid(pieceColor, gameState, row, tgtCol)) {
-                //check to see when can attack ( same color)
+                int tgtVal = gameState[row][tgtCol];
                 Move m = new Move(row, tgtCol, row, col);
                 moves.add(m);
+                    if(isOpponent(tgtVal, pieceColor)){
+                        isBlocked2 = true;
+                    }
+
             } else {
                 isBlocked2 = true;
             }
@@ -287,9 +296,12 @@ class ChessMovement {
             int tgtRow2 = row + i1;
 
             if (isValid(pieceColor, gameState, tgtRow2, col)) {
-                //check to see when can attack ( same color)
+                int tgtVal = gameState[tgtRow2][col];
                 Move m = new Move(tgtRow2, col, row, col);
                 moves.add(m);
+                    if(isOpponent(tgtVal, pieceColor)){
+                        isBlocked3 =  true;
+                    }
             } else {
                 isBlocked3 = true;
             }
@@ -303,9 +315,12 @@ class ChessMovement {
             int tgtCol2 = col + n;
 
             if (isValid(pieceColor, gameState, row, tgtCol2)) {
-                //check to see when can attack ( same color)
+                int tgtVal = gameState[row][tgtCol2];
                 Move m = new Move(row, tgtCol2, row, col);
                 moves.add(m);
+                if(isOpponent(tgtVal, pieceColor)){
+                    isBlocked4 = true;
+                }
             } else {
                 isBlocked4 = true;
             }
@@ -346,10 +361,12 @@ class ChessMovement {
                     int tgtCol = col + 1;
 
                     if (isValid(pieceColor, gameState, tgtRow, tgtCol)) {
-                        //check to see when can attack ( same color)
-
+                        int tgtVal = gameState[tgtRow][tgtCol];
                         Move m = new Move(tgtRow, tgtCol, row, col);
                         moves.add(m);
+                            if(isOpponent(tgtVal, pieceColor)){
+                                isBlocked = true;
+                            }
                     } else {
                         isBlocked = true;
                         break;
@@ -369,10 +386,12 @@ class ChessMovement {
                 int tgtCol = col - 1;
 
                 if (isValid(pieceColor, gameState, tgtRow, tgtCol)) {
-                    //check to see when can attack ( same color)
-
+                    int tgtVal = gameState[tgtRow][tgtCol];
                     Move m = new Move(tgtRow, tgtCol, row, col);
                     moves.add(m);
+                        if(isOpponent(tgtVal, pieceColor)){
+                            isBlocked2 =  true;
+                        }
                 } else {
                     isBlocked2 = true;
                     break;
@@ -393,10 +412,12 @@ class ChessMovement {
                 int tgtCol = col - 1;
 
                 if (isValid(pieceColor, gameState, tgtRow, tgtCol)) {
-                    //check to see when can attack ( same color)
-
+                    int tgtVal = gameState[tgtRow][tgtCol];
                     Move m = new Move(tgtRow, tgtCol, row, col);
                     moves.add(m);
+                        if(isOpponent(tgtVal, pieceColor)){
+                            isBlocked3 = true;
+                        }
                 } else {
                     isBlocked3 = true;
                     break;
@@ -416,10 +437,12 @@ class ChessMovement {
                 int tgtCol = col + 1;
 
                 if (isValid(pieceColor, gameState, tgtRow, tgtCol)) {
-                    //check to see when can attack ( same color)
-
+                    int tgtVal = gameState[tgtRow][tgtCol];
                     Move m = new Move(tgtRow, tgtCol, row, col);
                     moves.add(m);
+                        if(isOpponent(tgtVal, pieceColor)){
+                            isBlocked4 = true;
+                        }
                 } else {
                     isBlocked4 = true;
                     break;
@@ -437,8 +460,6 @@ class ChessMovement {
         for (int i = 1; i <= maxDistance; i++) {
             int tgtRow2 = row - i;
             if (isValid(pieceColor, gameState, tgtRow2, col)) {
-                //check to see when can attack ( same color)
-
                 Move m = new Move(col, tgtRow2, row, col);
                 moves.add(m);
             } else {
@@ -449,9 +470,7 @@ class ChessMovement {
         //king can move down
         for (int i = 1; i <= maxDistance; i++) {
             int tgtRow3 = row + i;
-            if (isValid(pieceColor, gameState, tgtRow3, col)) {
-                //check to see when can attack ( same color)
-
+            if (isValid(pieceColor, gameState, tgtRow3, col)){
                 Move m = new Move(tgtRow3, col, row, col);
                 moves.add(m);
             } else {
@@ -463,8 +482,6 @@ class ChessMovement {
         for (int i = 1; i <= maxDistance; i++) {
             int tgtCol2 = col + i;
             if (isValid(pieceColor, gameState, row, tgtCol2)) {
-                //check to see when can attack ( same color)
-
                 Move m = new Move(row, tgtCol2, row, col);
                 moves.add(m);
             } else {
@@ -475,12 +492,10 @@ class ChessMovement {
         //king can move left
         for (int i = 1; i <= maxDistance; i++) {
             int tgtCol3 = col - i;
-            if (isValid(pieceColor, gameState, row, tgtCol3)) {
-                //check to see when can attack ( same color)
-
+            if (isValid(pieceColor, gameState, row, tgtCol3)){
                 Move m = new Move(row, tgtCol3, row, col);
                 moves.add(m);
-            } else {
+            }else{
                 break;
             }
         }
