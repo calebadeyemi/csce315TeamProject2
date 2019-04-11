@@ -11,7 +11,7 @@ class ChessAi implements ChessMoveMakeable {
 
     @Override
     public Move getMove(int[][] state) {
-        int depth = 3;
+        int depth = 4;
         ArrayList<Tree.Node<Move>> moves = buildMoveTree(ChessState.getCopy(state), depth, color);
         ArrayList<Integer> treeValues = new ArrayList<>();
 
@@ -20,7 +20,7 @@ class ChessAi implements ChessMoveMakeable {
             treeValues.add(MiniMax(depth, color > 0, move, 0, 0));
         }
 
-        // Get the index of thte max minimax return and take the root move.
+        // Get the index of the best minimax return and take the associated root move.
         int index = 0;
         int max = 0;
         for (int i = 0; i < treeValues.size(); i++) {
@@ -68,13 +68,12 @@ class ChessAi implements ChessMoveMakeable {
 
     private ArrayList<Move> hypothesizeMoves(int[][] state, int color) {
         ArrayList<Move> moves = new ArrayList<>();
+        ChessState.printState(state);
 
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 if (color * state[row][col] > 0) {
                     moves.addAll(ChessMovement.getPotentialMovements(ChessState.getCopy(state), col, row));
-                    String c = color > 1 ? "white" : "black";
-                    System.out.println(c + ": " + state[row][col] + " > " + moves.size() + " moves found");
                 }
             }
         }
@@ -85,6 +84,9 @@ class ChessAi implements ChessMoveMakeable {
     private int MiniMax(int depth, Boolean maximizingPlayer, Tree.Node<Move> node, int alpha, int beta) {
         if (depth == 0) {
             int value = sumMatrix(ChessMovement.applyMove(ChessState.getCopy(node.state), node.data));
+            ChessState.printState(node.state);
+            System.out.println(value + " points.");
+            System.out.println();
             return value;
         }
 
