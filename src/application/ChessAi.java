@@ -1,6 +1,7 @@
 package application;
 
 import static application.PieceValue.Pawn;
+
 import java.io.*;
 
 class ChessAi implements ChessMoveMakeable {
@@ -18,7 +19,7 @@ class ChessAi implements ChessMoveMakeable {
                 if (state[row][col] == Pawn) {
                     moves = ChessMovement.getPotentialMovements(state, col, row);
                     // if there are moves to do
-                    if(sumMatrix(moves) > 0) {
+                    if (sumMatrix(moves) > 0) {
                         int mvRow, mvCol;
                         for (mvRow = 0; mvRow < 8; mvRow++) {
                             for (mvCol = 0; mvCol < 8; mvCol++) {
@@ -45,55 +46,46 @@ class ChessAi implements ChessMoveMakeable {
     }
 
 
-    static int minimax(int depth, Boolean maximizingPlayer, int values[][], int alpha,int beta){
-
-        int MAX = 1000;
-        int MIN = -1000;
+    static int minimax(int depth, Boolean maximizingPlayer, int values[][], int alpha, int beta) {
+        int MAX = 10000;
+        int MIN = -10000;
         // Terminating condition. i.e
         // leaf node is reached
         if (depth == 3) {
-           // return values[][];
+            // return values[][];
         }
 
-        if (maximizingPlayer)
-        {
+        if (maximizingPlayer) {
             int best = MIN;
 
             // Recur for left and
             // right children
-            for (int i = 0; i < 2; i++)
-            {
+            for (int i = 0; i < 2; i++) {
                 int val = minimax(depth + 1, false, values, alpha, beta);
                 best = Math.max(best, val);
                 alpha = Math.max(alpha, best);
 
                 // Alpha Beta Pruning
-                if (beta <= alpha)
-                    break;
+                if (beta <= alpha) break;
             }
             return best;
-        }
-        else
-        {
+        } else {
             int best = MAX;
 
             // Recur for left and
             // right children
-            for (int i = 0; i < 2; i++)
-            {
+            for (int i = 0; i < 2; i++) {
 
                 int val = minimax(depth + 1, true, values, alpha, beta);
                 best = Math.min(best, val);
                 beta = Math.min(beta, best);
 
                 // Alpha Beta Pruning
-                if (beta <= alpha)
-                    break;
+                if (beta <= alpha) break;
             }
             return best;
         }
     }
-
 
 
 }
