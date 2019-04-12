@@ -460,7 +460,7 @@ class ChessMovement {
         for (int i = 1; i <= maxDistance; i++) {
             int tgtRow2 = row - i;
             if (isValid(pieceColor, gameState, tgtRow2, col)) {
-                Move m = new Move(col, tgtRow2, row, col);
+                Move m = new Move(tgtRow2, col, row, col);
                 moves.add(m);
             } else {
                 break;
