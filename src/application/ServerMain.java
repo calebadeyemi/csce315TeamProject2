@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Scanner;
 
 
-class Server {
+class ServerMain {
     static List<ClientHandler> ar = new ArrayList<>();
 
     void start(int portNumber) {
