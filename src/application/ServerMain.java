@@ -29,7 +29,7 @@ class ServerMain {
 
                     System.out.println("New Client Connected: " + client);
 
-                    ClientHandler clientSock = new ClientHandler(client, "Hey");
+                    ClientHandler clientSock = new ClientHandler(client, "WELCOME");
                     clientSock.ID = client.getPort();
                     // Thread will handle each client
                     Thread t = new Thread(clientSock);
