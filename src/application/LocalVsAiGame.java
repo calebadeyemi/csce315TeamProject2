@@ -17,7 +17,7 @@ import javafx.scene.layout.*;
 
 import java.util.ArrayList;
 
-class ChessGameController {
+class LocalVsAiGame {
     private int[][] state = new int[8][8];
     private int[][] movementState = new int[8][8];
     private Pane root;

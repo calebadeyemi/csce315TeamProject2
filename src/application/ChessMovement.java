@@ -529,7 +529,7 @@ class ChessMovement {
         // pieces.
         for (int dist = 1; dist <= maxDist; dist++) {
             int mvmtRow = row + dist * dir;
-            if (isValid(pieceColor, gameState, mvmtRow, col)) {
+            if (isValid(pieceColor, gameState, mvmtRow, col) && isEmpty(pieceColor, gameState, mvmtRow, col)) {
                 Move m = new Move(mvmtRow, col, row, col);
                 moves.add(m);
             } else {
@@ -567,6 +567,10 @@ class ChessMovement {
         if (bounded)
             attackable = !isSameColor(color, state, row, col);
         return bounded && attackable;
+    }
+
+    private static boolean isEmpty(int color, int[][] state, int row, int col) {
+        return state[row][col] == 0;
     }
 
     private static boolean isOpponent(int tgtColor, int pieceColor) {
