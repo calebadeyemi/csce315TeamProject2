@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Scanner;
 
 
-class Server {
+class ServerMain {
     static List<ClientHandler> ar = new ArrayList<>();
 
     void start(int portNumber) {
@@ -29,7 +29,7 @@ class Server {
 
                     System.out.println("New Client Connected: " + client);
 
-                    ClientHandler clientSock = new ClientHandler(client, NetworkMessage.WelcomeMessage);
+                    ClientHandler clientSock = new ClientHandler(client, "WELCOME");
                     clientSock.ID = client.getPort();
                     // Thread will handle each client
                     Thread t = new Thread(clientSock);
