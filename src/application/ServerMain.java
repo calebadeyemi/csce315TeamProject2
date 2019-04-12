@@ -1,9 +1,10 @@
-
+package application;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class ServerMain {
 
@@ -81,7 +82,7 @@ public class ServerMain {
             try {
                 out = new PrintWriter(clientSocket.getOutputStream(), true);
                 in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-
+                Scanner scanner = new Scanner(System.in);
                 out.println(welcome);
 
                 String line;
@@ -96,8 +97,12 @@ public class ServerMain {
                         }
                         System.out.println("There are only " + ar.size() + " hosts connected");
                     }
-
-                    out.println(line);
+                    line = scanner.nextLine();
+                    for(ClientHandler c: ar) {
+                        out = new PrintWriter(c.clientSocket.getOutputStream(), true);
+                        out.println(line);
+                        out.flush();
+                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
