@@ -11,8 +11,8 @@ public class AiVsAiGame implements Runnable {
     private int[][] movementState = new int[8][8];
     private Pane root;
     private GridPane board = new GridPane();
-    private ChessMoveMakeable white = new Cli(PieceValue.White);
-    private ChessMoveMakeable black = new Cli(PieceValue.Black);
+    private ChessMoveMakeable white = new Cli("10.236.25.78", 4000,PieceValue.White);
+    private ChessMoveMakeable black = new Cli("10.236.25.78", 4000, PieceValue.Black);
 
     private EventHandler<Event> handleUiUpdate = event -> updateScene();
 
