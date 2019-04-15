@@ -19,7 +19,7 @@ public class Cli {
 
             System.out.println(in.readLine());
 
-            while(!"exit".equalsIgnoreCase(line)) {
+            while(!"disconnect".equalsIgnoreCase(line)) {
                 line = scanner.nextLine();
                 out.println(line);
                 out.flush();
