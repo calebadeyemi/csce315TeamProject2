@@ -20,10 +20,27 @@ public class Cli {
             System.out.println(in.readLine());
 
             while(!"disconnect".equalsIgnoreCase(line)) {
-                line = scanner.nextLine();
-                out.println(line);
+                //Get move object  from board
+               // line = scanner.nextLine();
+                out.println("READY");
                 out.flush();
-                System.out.println("Server replied " + in.readLine());
+                line = in.readLine();
+                if(line.equals("OK")){
+                    continue;
+                } else if(line.equals("TIME")){
+                    System.out.println("TOOK TOO LONG");
+                    out.println("disconnect");
+
+                } else if(line.equals("WINNER")){
+                    System.out.println("YOU WON");
+                    out.println("disconnect");
+                } else if(line.equals("LOSER") ) {
+                    System.out.println("YOU LOST");
+                    out.println("disconnect");
+                }
+               // System.out.println("Server replied " + in.readLine());
+
+
             }
             scanner.close();
         } catch (IOException e) {

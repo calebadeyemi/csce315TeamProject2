@@ -160,11 +160,6 @@ class ServerMain {
                         out = new PrintWriter(clientSocket.getOutputStream(), true);
                         out.println("OK");
                         out.flush();
-                        for (ClientHandler c : ar) {
-                            out = new PrintWriter(c.clientSocket.getOutputStream(), true);
-                            out.println(line);
-                            out.flush();
-                        }
                     }
                 }
             } catch (IOException e) {
