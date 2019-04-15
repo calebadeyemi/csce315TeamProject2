@@ -119,7 +119,20 @@ class ServerMain {
                             break;
                         }
                         Move move = NetworkMessage.MoveMessageToMove(line);
-                        ChessMovement.applyMove(state, move);
+
+                        // to validate
+                        //if (move in ChessMovement.getPotentialMovements(state, move.colFrom, move.rowFrom)) { then
+                        // valid };
+                        int prevStateSum = ChessState.sumState(state);
+                        state = ChessMovement.applyMove(state, move);
+
+
+                        // math is probably wrong
+                        if (Math.abs(ChessState.sumState(state) - prevStateSum) == PieceValue.King) {
+                            // white wins
+                        } else if (ChessState.sumState(state) < -900) {
+                            // black wins
+                        }
                         //send move to GUI - controller and check for winner
                         if (color == "WHITE") {
                             out = new PrintWriter(ar.get(1).clientSocket.getOutputStream(), true);

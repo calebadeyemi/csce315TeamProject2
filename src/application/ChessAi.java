@@ -29,17 +29,25 @@ class ChessAi implements ChessMoveMakeable {
                 index = i;
             }
         }
-        return moves.get(index).data;
-    }
 
-    private int sumMatrix(int[][] matrix) {
-        int sum = 0;
-        for (int[] row : matrix) {
-            for (int col : row) {
-                sum += col;
+        Tree.Node<Move> node = moves.get(index);
+        ChessState.printState(ChessMovement.applyMove(node.state, node.data));
+        for (Tree.Node<Move> child : node.children){
+            int[][] state1 = ChessMovement.applyMove(child.state, child.data);
+            ChessState.printState(state1);
+            System.out.println(ChessState.sumState(state1));
+            for (Tree.Node<Move> grandchild : child.children) {
+                ChessState.printState(ChessMovement.applyMove(grandchild.state, grandchild.data));
+                System.out.println(ChessState.sumState(ChessMovement.applyMove(grandchild.state, grandchild.data)));
+                for (Tree.Node<Move> greatgrandchild : grandchild.children) {
+                    ChessState.printState(ChessMovement.applyMove(greatgrandchild.state, greatgrandchild.data));
+                    System.out.println(ChessState.sumState(ChessMovement.applyMove(greatgrandchild.state,
+                            greatgrandchild.data)));
+                }
             }
         }
-        return sum;
+
+        return moves.get(index).data;
     }
 
     private ArrayList<Tree.Node<Move>> buildMoveTree(int[][]state, int depth, int color) {
@@ -81,10 +89,10 @@ class ChessAi implements ChessMoveMakeable {
     private int MiniMax(int depth, Boolean maximizingPlayer, Tree.Node<Move> node, int alpha, int beta) {
         int value = 0;
         if (depth == 0) {
-            int[][] lhs = ChessMovement.applyMove(ChessState.getCopy(node.state), node.data);
-            int[][] rhs = ChessState.getOptimalPieceState(node.state[node.data.rowFrom][node.data.colFrom]);
-            int[][] optimalMatrix = optimizeMatrix(lhs, rhs);
-            value = sumMatrix(optimalMatrix);
+            int[][] newState = ChessMovement.applyMove(ChessState.getCopy(node.state), node.data);
+            int augment = ChessState.getOptimalPieceStateAugment(node.state[node.data.rowFrom][node.data.colFrom], node.data);
+            int[][] optimalMatrix = ChessState.applyOptimizer(newState, augment, node.data);
+            value = ChessState.sumState(optimalMatrix);
         } else if (maximizingPlayer) {
             value = -10000;
 
@@ -110,16 +118,7 @@ class ChessAi implements ChessMoveMakeable {
         return value;
     }
 
-    int[][] optimizeMatrix (int[][] state, int[][] optimizer) {
-        int[][] combined = ChessState.getCopy(state);
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                if (state[i][j] == 0)
-                    combined[i][j] = state[i][j] + optimizer[i][j];
-            }
-        }
-        return combined;
-    }
+
 }
 
 class Tree<T> {

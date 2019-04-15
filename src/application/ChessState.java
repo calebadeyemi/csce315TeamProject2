@@ -21,6 +21,16 @@ class ChessState {
         return getCopy(initialPieceState);
     }
 
+    static int sumState(int[][] matrix) {
+        int sum = 0;
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                sum += matrix[row][col];
+            }
+        }
+        return sum;
+    }
+
     static int[][] getCopy(int[][] array) {
         int[][] copy = new int[8][8];
         for (int i = 0; i < 8; i++) {
@@ -67,7 +77,7 @@ class ChessState {
         System.out.println(separator);
     }
 
-    static int[][] getOptimalPieceState(int pieceValue) {
+    static int getOptimalPieceStateAugment(int pieceValue, Move move) {
         int[][] copy = new int[8][8];
 
         switch (Math.abs(pieceValue)) {
@@ -80,10 +90,16 @@ class ChessState {
         }
 
         if (!(pieceValue < 0)) {
-            return getFlippedReverseCopy(copy);
+            return getFlippedReverseCopy(copy)[move.rowTo][move.colTo];
         } else {
-            return copy;
+            return copy[move.rowTo][move.colTo];
         }
+    }
+
+    static int[][] applyOptimizer (int[][] state, int optimizer, Move move) {
+        int[][] combined = ChessState.getCopy(state);
+        combined[move.rowTo][move.colTo] += optimizer;
+        return combined;
     }
 
     private static int[][] optimalKingState = {

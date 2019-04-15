@@ -11,10 +11,15 @@ public class AiVsAiGame implements Runnable {
     private int[][] movementState = new int[8][8];
     private Pane root;
     private GridPane board = new GridPane();
-    private ChessMoveMakeable white = new ChessAi(PieceValue.White);
-    private ChessMoveMakeable black = new ChessAi(PieceValue.Black);
+    private ChessMoveMakeable white = new Cli(PieceValue.White);
+    private ChessMoveMakeable black = new Cli(PieceValue.Black);
 
     private EventHandler<Event> handleUiUpdate = event -> updateScene();
+
+    AiVsAiGame() {
+        // connect clients to server... or whatnot
+        //
+    }
 
     Scene generateRootScene(Pane root) {
         this.root = root;
@@ -42,7 +47,8 @@ public class AiVsAiGame implements Runnable {
     @Override
     public void run() {
         updateScene();
-        state = ChessMovement.applyMove(state, white.getMove(state));
+        Move move = white.getMove(state); // remote AI or player sends move to server or server requests move
+        state = ChessMovement.applyMove(state, move);
         updateScene();
         state = ChessMovement.applyMove(state, black.getMove(state));
     }

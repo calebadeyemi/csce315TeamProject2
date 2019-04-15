@@ -112,7 +112,9 @@ class LocalVsAiGame {
         int fromRow = GridPane.getRowIndex(selectedPiece);
 
         state = ChessMovement.applyMove(ChessState.getCopy(state), new Move(toRow, toCol, fromRow, fromCol));
+        System.out.println("Score: " + ChessState.sumState(state));
         state = ChessMovement.applyMove(ChessState.getCopy(state), opponent.getMove(ChessState.getCopy(state)));
+        System.out.println("Score: " + ChessState.sumState(state));
     }
 
     private void updateScene() {
