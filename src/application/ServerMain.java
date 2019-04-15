@@ -88,6 +88,8 @@ class ServerMain {
                 in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 Scanner scanner = new Scanner(System.in);
                 out.println(welcome);
+                long beginTime = 0;
+                long endTime = 0;
                 if(color == "WHITE") {
                     out.println("INFO 5000 WHITE");
                 } else if(color == "BLACK") {
@@ -97,9 +99,9 @@ class ServerMain {
                 while ((line = in.readLine()) != null) {
                     if(line.equals("READY")){
                         state = ChessState.getInitialPieceState();
-                        long beginTime = System.currentTimeMillis();
+                        beginTime = System.currentTimeMillis();
                         line = in.readLine();
-                        long endTime = System.currentTimeMillis();
+                        endTime = System.currentTimeMillis();
                         if(endTime - beginTime > 5000) {
                             out = new PrintWriter(clientSocket.getOutputStream(), true);
                             out.println("TIME");
@@ -166,10 +168,48 @@ class ServerMain {
                         }
                         System.out.println("There are only " + ar.size() + " hosts connected");
                     } else {
+
                         line = in.readLine();
+                        endTime = System.currentTimeMillis();
+                        if(endTime - beginTime > 5000) {
+                            out = new PrintWriter(clientSocket.getOutputStream(), true);
+                            out.println("TIME");
+                            out.println("LOSER");
+                            if (color == "WHITE") {
+                                out = new PrintWriter(ar.get(1).clientSocket.getOutputStream(), true);
+                                out.println("WINNER");
+                                out.flush();
+
+                            } else if(color == "BLACK"){
+                                out = new PrintWriter(ar.get(0).clientSocket.getOutputStream(), true);
+                                out.println("WINNER");
+                                out.flush();
+                            }
+                            out.flush();
+                            //game over
+                            break;
+                        }
                         Move move = NetworkMessage.MoveMessageToMove(line);
-                        ChessMovement.applyMove(state, move);
+                        int prevStateSum = ChessState.sumState(state);
+                        state = ChessMovement.applyMove(state, move);
+
                         //send to GUI controller and check for winner
+                        if (Math.abs(ChessState.sumState(state) - prevStateSum) == PieceValue.King) {
+                            if (color == "WHITE") {
+                                out = new PrintWriter(ar.get(1).clientSocket.getOutputStream(), true);
+                                out.println("WINNER");
+                                out.flush();
+
+                            } else if(color == "BLACK"){
+                                out = new PrintWriter(ar.get(0).clientSocket.getOutputStream(), true);
+                                out.println("WINNER");
+                                out.flush();
+                            }
+                            out.flush();
+                            //game over
+                            break;
+                        }
+
                         if (color == "WHITE") {
                             out = new PrintWriter(ar.get(1).clientSocket.getOutputStream(), true);
                             out.println(line);
@@ -181,6 +221,7 @@ class ServerMain {
                         }
                         out = new PrintWriter(clientSocket.getOutputStream(), true);
                         out.println("OK");
+                        beginTime = System.currentTimeMillis();
                         out.flush();
                     }
                 }
