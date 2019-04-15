@@ -125,15 +125,24 @@ class ServerMain {
                         // valid };
                         int prevStateSum = ChessState.sumState(state);
                         state = ChessMovement.applyMove(state, move);
-
-
-                        // math is probably wrong
-                        if (Math.abs(ChessState.sumState(state) - prevStateSum) == PieceValue.King) {
-                            // white wins
-                        } else if (ChessState.sumState(state) < -900) {
-                            // black wins
-                        }
                         //send move to GUI - controller and check for winner
+
+                        if (Math.abs(ChessState.sumState(state) - prevStateSum) == PieceValue.King) {
+                            if (color == "WHITE") {
+                                out = new PrintWriter(ar.get(1).clientSocket.getOutputStream(), true);
+                                out.println("WINNER");
+                                out.flush();
+
+                            } else if(color == "BLACK"){
+                                out = new PrintWriter(ar.get(0).clientSocket.getOutputStream(), true);
+                                out.println("WINNER");
+                                out.flush();
+                            }
+                            out.flush();
+                            //game over
+                            break;
+                        }
+
                         if (color == "WHITE") {
                             out = new PrintWriter(ar.get(1).clientSocket.getOutputStream(), true);
                             out.println(line);
