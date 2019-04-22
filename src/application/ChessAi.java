@@ -34,17 +34,6 @@ class ChessAi implements ChessMoveMakeable {
         ChessState.printState(ChessMovement.applyMove(node.state, node.data));
         for (Tree.Node<Move> child : node.children){
             int[][] state1 = ChessMovement.applyMove(child.state, child.data);
-            ChessState.printState(state1);
-            System.out.println(ChessState.sumState(state1));
-            for (Tree.Node<Move> grandchild : child.children) {
-                ChessState.printState(ChessMovement.applyMove(grandchild.state, grandchild.data));
-                System.out.println(ChessState.sumState(ChessMovement.applyMove(grandchild.state, grandchild.data)));
-                for (Tree.Node<Move> greatgrandchild : grandchild.children) {
-                    ChessState.printState(ChessMovement.applyMove(greatgrandchild.state, greatgrandchild.data));
-                    System.out.println(ChessState.sumState(ChessMovement.applyMove(greatgrandchild.state,
-                            greatgrandchild.data)));
-                }
-            }
         }
 
         return moves.get(index).data;
